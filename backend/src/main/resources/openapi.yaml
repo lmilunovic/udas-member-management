@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: UDAS Member Management API
-  description: API for managing organization members
+  description: API for managing organization members and application users
   version: v1
 
 servers:
@@ -15,6 +15,8 @@ paths:
       operationId: createMember
       tags:
         - Members
+      security:
+        - oauth2: []
       requestBody:
         required: true
         content:
@@ -30,12 +32,18 @@ paths:
                 $ref: '#/components/schemas/Member'
         '400':
           description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
 
     get:
       summary: List all members with pagination and filtering
       operationId: listMembers
       tags:
         - Members
+      security:
+        - oauth2: []
       parameters:
         - name: firstName
           in: query
@@ -92,6 +100,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PagedMember'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
 
   /members/{id}:
     get:
@@ -99,6 +111,8 @@ paths:
       operationId: getMember
       tags:
         - Members
+      security:
+        - oauth2: []
       parameters:
         - name: id
           in: path
@@ -115,12 +129,18 @@ paths:
                 $ref: '#/components/schemas/Member'
         '404':
           description: Member not found
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
 
     put:
       summary: Update a member
       operationId: updateMember
       tags:
         - Members
+      security:
+        - oauth2: [READ_WRITE, ADMIN]
       parameters:
         - name: id
           in: path
@@ -143,12 +163,18 @@ paths:
                 $ref: '#/components/schemas/Member'
         '404':
           description: Member not found
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
 
     delete:
       summary: Delete a member
       operationId: deleteMember
       tags:
         - Members
+      security:
+        - oauth2: [READ_WRITE, ADMIN]
       parameters:
         - name: id
           in: path
@@ -161,8 +187,157 @@ paths:
           description: Member deleted successfully
         '404':
           description: Member not found
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+
+  /users:
+    post:
+      summary: Create application user
+      operationId: createUser
+      tags:
+        - Users
+      security:
+        - oauth2: [ADMIN]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplicationUserRequest'
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationUser'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+
+    get:
+      summary: List all users
+      operationId: listUsers
+      tags:
+        - Users
+      security:
+        - oauth2: [ADMIN]
+      responses:
+        '200':
+          description: List of users
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedApplicationUser'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+
+  /users/{id}:
+    get:
+      summary: Get user by ID
+      operationId: getUser
+      tags:
+        - Users
+      security:
+        - oauth2: [ADMIN]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: User found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationUser'
+        '404':
+          description: User not found
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+
+    put:
+      summary: Update user
+      operationId: updateUser
+      tags:
+        - Users
+      security:
+        - oauth2: [ADMIN]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplicationUserRequest'
+      responses:
+        '200':
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationUser'
+        '404':
+          description: User not found
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+
+    delete:
+      summary: Delete user
+      operationId: deleteUser
+      tags:
+        - Users
+      security:
+        - oauth2: [ADMIN]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: User deleted successfully
+        '404':
+          description: User not found
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
 
 components:
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://accounts.google.com/o/oauth2/v2/auth
+          tokenUrl: https://oauth2.googleapis.com/token
+          scopes:
+            read: Read access
+            write: Write access
+
   schemas:
     Member:
       type: object
@@ -218,6 +393,59 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Member'
+        page:
+          type: integer
+        size:
+          type: integer
+        totalElements:
+          type: integer
+        totalPages:
+          type: integer
+
+    ApplicationUser:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        email:
+          type: string
+          readOnly: true
+        name:
+          type: string
+        role:
+          type: string
+          enum: [READ_ONLY, READ_WRITE, ADMIN]
+        active:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+          readOnly: true
+
+    ApplicationUserRequest:
+      type: object
+      required:
+        - email
+        - role
+      properties:
+        email:
+          type: string
+        role:
+          type: string
+          enum: [READ_ONLY, READ_WRITE, ADMIN]
+        active:
+          type: boolean
+          default: true
+
+    PagedApplicationUser:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApplicationUser'
         page:
           type: integer
         size:

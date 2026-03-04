@@ -11,3 +11,24 @@ spring:
         format_sql: true
   flyway:
     locations: classpath:db/migration
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID:dev-client-id}
+            client-secret: ${GOOGLE_CLIENT_SECRET:dev-client-secret}
+            scope: openid,profile,email
+
+app:
+  name: "udas-member-management"
+  version: "v1"
+  api:
+    prefix: "/api/v1"
+    page-size-default: 20
+    page-size-max: 100
+  security:
+    allowed-domain: "example.com"
+    admin-emails:
+      - admin@example.com
+    default-role: READ_ONLY
