@@ -1,0 +1,238 @@
+openapi: 3.0.3
+info:
+  title: UDAS Member Management API
+  description: API for managing organization members
+  version: v1
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Development server
+
+paths:
+  /members:
+    post:
+      summary: Create a new member
+      operationId: createMember
+      tags:
+        - Members
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Member'
+      responses:
+        '201':
+          description: Member created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Member'
+        '400':
+          description: Bad request
+
+    get:
+      summary: List all members with pagination and filtering
+      operationId: listMembers
+      tags:
+        - Members
+      parameters:
+        - name: firstName
+          in: query
+          schema:
+            type: string
+          description: Filter by first name
+        - name: lastName
+          in: query
+          schema:
+            type: string
+          description: Filter by last name
+        - name: email
+          in: query
+          schema:
+            type: string
+          description: Filter by email
+        - name: phone
+          in: query
+          schema:
+            type: string
+          description: Filter by phone
+        - name: city
+          in: query
+          schema:
+            type: string
+          description: Filter by city
+        - name: country
+          in: query
+          schema:
+            type: string
+          description: Filter by country
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+          description: Page number
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 20
+          description: Page size
+        - name: sort
+          in: query
+          schema:
+            type: string
+            default: id,asc
+          description: "Sort format: field,direction (e.g., lastName,asc)"
+      responses:
+        '200':
+          description: List of members
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedMember'
+
+  /members/{id}:
+    get:
+      summary: Get a member by ID
+      operationId: getMember
+      tags:
+        - Members
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Member found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Member'
+        '404':
+          description: Member not found
+
+    put:
+      summary: Update a member
+      operationId: updateMember
+      tags:
+        - Members
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Member'
+      responses:
+        '200':
+          description: Member updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Member'
+        '404':
+          description: Member not found
+
+    delete:
+      summary: Delete a member
+      operationId: deleteMember
+      tags:
+        - Members
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Member deleted successfully
+        '404':
+          description: Member not found
+
+components:
+  schemas:
+    Member:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        firstName:
+          type: string
+          minLength: 1
+          maxLength: 100
+        lastName:
+          type: string
+          minLength: 1
+          maxLength: 100
+        email:
+          type: array
+          items:
+            type: string
+            format: email
+        phone:
+          type: array
+          items:
+            type: string
+        dateOfBirth:
+          type: string
+          format: date
+        dateOfDeath:
+          type: string
+          format: date
+        ssn:
+          type: string
+        address:
+          $ref: '#/components/schemas/Address'
+
+    Address:
+      type: object
+      properties:
+        street:
+          type: string
+        city:
+          type: string
+        postalCode:
+          type: string
+        country:
+          type: string
+
+    PagedMember:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Member'
+        page:
+          type: integer
+        size:
+          type: integer
+        totalElements:
+          type: integer
+        totalPages:
+          type: integer
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        details:
+          type: object

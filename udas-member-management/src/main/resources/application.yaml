@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: udas-member-management
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: public
+  flyway:
+    enabled: true
+
+app:
+  name: "udas-member-management"
+  version: "v1"
+  api:
+    prefix: "/api/v1"
+    page-size-default: 20
+    page-size-max: 100
