@@ -82,4 +82,16 @@ public class ApplicationUserService {
     public ApplicationUser createUserFromOAuth(ApplicationUser user) {
         return userRepository.save(user);
     }
+
+    public ApplicationUser createAdminUser(String email) {
+        ApplicationUser admin = ApplicationUser.builder()
+                .id(UUID.randomUUID())
+                .email(email)
+                .name(email.split("@")[0])
+                .role(UserRole.ADMIN)
+                .active(true)
+                .createdAt(OffsetDateTime.now())
+                .build();
+        return userRepository.save(admin);
+    }
 }
