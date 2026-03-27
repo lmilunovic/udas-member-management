@@ -11,11 +11,8 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
@@ -43,7 +40,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         validateDomain(email);
 
         ApplicationUser user = userService.findByEmail(email)
-                .orElseGet(() -> createNewUser(email, name, googleId));
+                .orElseThrow(() -> new OAuth2AuthenticationException("Access denied. User not registered."));
 
         if (!user.getActive()) {
             throw new OAuth2AuthenticationException("User account is disabled");
@@ -63,32 +60,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 throw new OAuth2AuthenticationException("Email domain not allowed: " + domain);
             }
         }
-    }
-
-    private ApplicationUser createNewUser(String email, String name, String googleId) {
-        if (appProperties.security() == null || appProperties.security().adminEmails() == null) {
-            throw new OAuth2AuthenticationException("No admin emails configured");
-        }
-
-        UserRole role;
-        if (appProperties.security().adminEmails().contains(email)) {
-            role = UserRole.ADMIN;
-        } else {
-            String defaultRole = appProperties.security().defaultRole();
-            role = defaultRole != null ? UserRole.valueOf(defaultRole) : UserRole.READ_ONLY;
-        }
-
-        ApplicationUser user = ApplicationUser.builder()
-                .id(UUID.randomUUID())
-                .email(email)
-                .name(name)
-                .googleId(googleId)
-                .role(role)
-                .active(true)
-                .createdAt(OffsetDateTime.now())
-                .build();
-
-        return userService.createUserFromOAuth(user);
     }
 
     private Collection<GrantedAuthority> mapRoleToAuthorities(UserRole role) {
