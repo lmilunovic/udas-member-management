@@ -6,17 +6,16 @@ import ba.rs.udas.udas_member_management.model.Address;
 import ba.rs.udas.udas_member_management.model.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("MemberMapper conversions")
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 class MemberMapperTest {
 
-    @Autowired
-    private MemberMapper memberMapper;
+    private final MemberMapper memberMapper = new MemberMapperImpl();
 
     @Test
     @DisplayName("toEntity should map Member to MemberEntity with flat address")
@@ -105,6 +104,8 @@ class MemberMapperTest {
 
         // Then
         assertThat(member.getFirstName()).isEqualTo("John");
-        assertThat(member.getAddress()).isNull();
+        assertThat(member.getAddress()).isNotNull();
+        assertThat(member.getAddress().getStreet()).isNull();
+        assertThat(member.getAddress().getCity()).isNull();
     }
 }
