@@ -19,3 +19,5 @@ app:
     prefix: "/api/v1"
     page-size-default: 20
     page-size-max: 100
+  security:
+    allowed-domain: "your-org.com"
