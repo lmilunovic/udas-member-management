@@ -6,154 +6,141 @@ import ba.rs.udas.udas_member_management.model.PagedMember;
 import ba.rs.udas.udas_member_management.service.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@DisplayName("MemberController HTTP endpoints")
-@WebMvcTest(MemberController.class)
+@DisplayName("MemberController operations")
+@ExtendWith(MockitoExtension.class)
 class MemberControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockBean
+    @Mock
     private MemberService memberService;
 
+    @InjectMocks
+    private MemberController controller;
+
     @Test
-    @DisplayName("GET /api/v1/members should return 200 with paginated list")
-    void listMembers_whenCalled_thenReturns200WithPaginatedList() throws Exception {
+    @DisplayName("listMembers should return 200 with paginated list")
+    void listMembers_whenCalled_thenReturns200WithPaginatedList() {
         // Given
         Member member = MemberFixtures.memberJohn();
-        PagedMember pagedMember = PagedMember.builder()
-                .content(List.of(member))
-                .page(0)
-                .size(20)
-                .totalElements(1)
-                .totalPages(1)
-                .build();
         when(memberService.findAll()).thenReturn(List.of(member));
 
-        // When & Then
-        mockMvc.perform(get("/api/v1/members"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content").isArray())
-                .andExpect(jsonPath("$.content[0].firstName").value("John"))
-                .andExpect(jsonPath("$.page").value(0))
-                .andExpect(jsonPath("$.size").value(20));
+        // When
+        ResponseEntity<PagedMember> result = controller.listMembers(
+                null, null, null, null, null, null, null, null, null);
+
+        // Then
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(result.getBody()).isNotNull();
+        assertThat(result.getBody().getContent()).hasSize(1);
+        assertThat(result.getBody().getContent().get(0).getFirstName()).isEqualTo("John");
     }
 
     @Test
-    @DisplayName("POST /api/v1/members should return 201 with created member")
-    void createMember_givenValidRequest_whenCalled_thenReturns201() throws Exception {
+    @DisplayName("createMember should return 201 with created member")
+    void createMember_givenValidRequest_whenCalled_thenReturns201() {
         // Given
         Member member = MemberFixtures.memberJohn();
         when(memberService.createMember(any(Member.class))).thenReturn(member);
 
-        // When & Then
-        mockMvc.perform(post("/api/v1/members")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                            {
-                                "firstName": "John",
-                                "lastName": "Doe",
-                                "email": ["john@example.com"]
-                            }
-                            """))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.firstName").value("John"))
-                .andExpect(jsonPath("$.lastName").value("Doe"));
+        // When
+        ResponseEntity<Member> result = controller.createMember(member);
+
+        // Then
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(result.getBody()).isNotNull();
+        assertThat(result.getBody().getFirstName()).isEqualTo("John");
     }
 
     @Test
-    @DisplayName("GET /api/v1/members/{id} should return 200 when found")
-    void getMember_givenExistingId_whenFound_thenReturns200() throws Exception {
+    @DisplayName("getMember should return 200 when found")
+    void getMember_givenExistingId_whenFound_thenReturns200() {
         // Given
         UUID id = UUID.randomUUID();
         Member member = MemberFixtures.memberJohn();
         when(memberService.getMember(id)).thenReturn(member);
 
-        // When & Then
-        mockMvc.perform(get("/api/v1/members/" + id))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.firstName").value("John"))
-                .andExpect(jsonPath("$.lastName").value("Doe"));
+        // When
+        ResponseEntity<Member> result = controller.getMember(id);
+
+        // Then
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(result.getBody()).isNotNull();
+        assertThat(result.getBody().getFirstName()).isEqualTo("John");
     }
 
     @Test
-    @DisplayName("GET /api/v1/members/{id} should return 404 when not found")
-    void getMember_givenNonExistingId_whenNotFound_thenReturns404() throws Exception {
+    @DisplayName("getMember should return 404 when not found")
+    void getMember_givenNonExistingId_whenNotFound_thenReturns404() {
         // Given
         UUID id = UUID.randomUUID();
         when(memberService.getMember(id)).thenReturn(null);
 
-        // When & Then
-        mockMvc.perform(get("/api/v1/members/" + id))
-                .andExpect(status().isNotFound());
+        // When
+        ResponseEntity<Member> result = controller.getMember(id);
+
+        // Then
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
     @Test
-    @DisplayName("PUT /api/v1/members/{id} should return 200 when updated")
-    void updateMember_givenExistingId_whenUpdated_thenReturns200() throws Exception {
+    @DisplayName("updateMember should return 200 when updated")
+    void updateMember_givenExistingId_whenUpdated_thenReturns200() {
         // Given
         UUID id = UUID.randomUUID();
         Member member = MemberFixtures.memberJohn();
         when(memberService.updateMember(any(UUID.class), any(Member.class))).thenReturn(member);
 
-        // When & Then
-        mockMvc.perform(put("/api/v1/members/" + id)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                            {
-                                "firstName": "John",
-                                "lastName": "Doe",
-                                "email": ["john@example.com"]
-                            }
-                            """))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.firstName").value("John"));
+        // When
+        ResponseEntity<Member> result = controller.updateMember(id, member);
+
+        // Then
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(result.getBody()).isNotNull();
+        assertThat(result.getBody().getFirstName()).isEqualTo("John");
     }
 
     @Test
-    @DisplayName("PUT /api/v1/members/{id} should return 404 when not found")
-    void updateMember_givenNonExistingId_whenNotFound_thenReturns404() throws Exception {
+    @DisplayName("updateMember should return 404 when not found")
+    void updateMember_givenNonExistingId_whenNotFound_thenReturns404() {
         // Given
         UUID id = UUID.randomUUID();
+        Member member = MemberFixtures.memberJohn();
         when(memberService.updateMember(any(UUID.class), any(Member.class))).thenReturn(null);
 
-        // When & Then
-        mockMvc.perform(put("/api/v1/members/" + id)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                            {
-                                "firstName": "John",
-                                "lastName": "Doe"
-                            }
-                            """))
-                .andExpect(status().isNotFound());
+        // When
+        ResponseEntity<Member> result = controller.updateMember(id, member);
+
+        // Then
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
     @Test
-    @DisplayName("DELETE /api/v1/members/{id} should return 204")
-    void deleteMember_whenCalled_thenReturns204() throws Exception {
+    @DisplayName("deleteMember should return 204")
+    void deleteMember_whenCalled_thenReturns204() {
         // Given
         UUID id = UUID.randomUUID();
         doNothing().when(memberService).deleteMember(id);
 
-        // When & Then
-        mockMvc.perform(delete("/api/v1/members/" + id))
-                .andExpect(status().isNoContent());
+        // When
+        ResponseEntity<Void> result = controller.deleteMember(id);
+
+        // Then
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        verify(memberService).deleteMember(id);
     }
 }

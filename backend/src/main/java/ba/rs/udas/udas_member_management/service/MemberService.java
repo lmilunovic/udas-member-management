@@ -42,9 +42,13 @@ public class MemberService {
     }
 
     public Member updateMember(UUID id, Member member) {
-        var entity = memberMapper.toEntity(member);
-        entity.setId(id);
-        var saved = memberRepository.save(entity);
-        return memberMapper.toModel(saved);
+        return memberRepository.findById(id)
+                .map(existing -> {
+                    var entity = memberMapper.toEntity(member);
+                    entity.setId(id);
+                    var saved = memberRepository.save(entity);
+                    return memberMapper.toModel(saved);
+                })
+                .orElse(null);
     }
 }
