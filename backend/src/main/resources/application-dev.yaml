@@ -29,6 +29,3 @@ app:
     page-size-max: 100
   security:
     allowed-domain: "example.com"
-    admin-emails:
-      - admin@example.com
-    default-role: READ_ONLY
