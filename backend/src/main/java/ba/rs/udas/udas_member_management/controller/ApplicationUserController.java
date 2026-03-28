@@ -9,15 +9,17 @@ import ba.rs.udas.udas_member_management.service.ApplicationUserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.UUID;
 
 @RestController
+@RequestMapping("/api/v1")
 public class ApplicationUserController implements UsersApi {
 
     private final ApplicationUserService userService;
@@ -28,13 +30,14 @@ public class ApplicationUserController implements UsersApi {
         this.userMapper = userMapper;
     }
 
-    @GetMapping("/api/v1/users/me")
-    public ResponseEntity<ba.rs.udas.udas_member_management.model.ApplicationUser> getCurrentUser(@AuthenticationPrincipal OAuth2User principal) {
-        if (principal == null) {
+    @Override
+    public ResponseEntity<ba.rs.udas.udas_member_management.model.ApplicationUser> getCurrentUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated()) {
             return ResponseEntity.status(401).build();
         }
-        String email = principal.getAttribute("email");
-        return userService.findByEmail(email)
+        OidcUser oidcUser = (OidcUser) auth.getPrincipal();
+        return userService.findByEmail(oidcUser.getEmail())
                 .map(user -> ResponseEntity.ok(userMapper.toModel(user)))
                 .orElse(ResponseEntity.notFound().build());
     }
