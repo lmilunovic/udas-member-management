@@ -1,9 +1,12 @@
-import { Outlet, Link, useLocation } from 'react-router-dom';
+import { Outlet, Link, useLocation, Navigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 
 export default function Layout() {
-  const { user, logout } = useAuth();
+  const { user, isLoading, logout } = useAuth();
   const location = useLocation();
+
+  if (isLoading) return <div>Loading...</div>;
+  if (!user) return <Navigate to="/login" replace />;
 
   const navItems = [
     { path: '/', label: 'Dashboard' },

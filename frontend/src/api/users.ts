@@ -1,26 +1,15 @@
-import axios from 'axios';
-import { ApplicationUser, ApplicationUserRequest, PagedResponse } from './types';
+import { UsersApi, Configuration } from './generated';
+import type { ApplicationUserRequest } from './generated';
 
-const api = axios.create({
-  baseURL: '/api/v1',
-});
+export type { ApplicationUser, ApplicationUserRequest } from './generated';
+
+const api = new UsersApi(new Configuration({ basePath: '/api/v1' }));
 
 export const usersApi = {
-  list: () => 
-    api.get<PagedResponse<ApplicationUser>>('/users').then(res => res.data),
-  
-  get: (id: string) => 
-    api.get<ApplicationUser>(`/users/${id}`).then(res => res.data),
-  
-  create: (data: ApplicationUserRequest) => 
-    api.post<ApplicationUser>('/users', data).then(res => res.data),
-  
-  update: (id: string, data: ApplicationUserRequest) => 
-    api.put<ApplicationUser>(`/users/${id}`, data).then(res => res.data),
-  
-  delete: (id: string) => 
-    api.delete(`/users/${id}`),
-  
-  getCurrentUser: () => 
-    api.get('/users/me').then(res => res.data),
+  list: () => api.listUsers().then(res => res.data),
+  get: (id: string) => api.getUser(id).then(res => res.data),
+  create: (data: ApplicationUserRequest) => api.createUser(data).then(res => res.data),
+  update: (id: string, data: ApplicationUserRequest) => api.updateUser(id, data).then(res => res.data),
+  delete: (id: string) => api.deleteUser(id),
+  getCurrentUser: () => api.getCurrentUser().then(res => res.data),
 };

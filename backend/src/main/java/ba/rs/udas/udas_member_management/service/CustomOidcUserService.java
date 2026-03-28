@@ -6,39 +6,38 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.context.annotation.Primary;
-import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.List;
 
 @Service
-@Primary
-public class CustomOAuth2UserService extends DefaultOAuth2UserService {
+public class CustomOidcUserService extends OidcUserService {
 
-    private static final Logger log = LoggerFactory.getLogger(CustomOAuth2UserService.class);
+    private static final Logger log = LoggerFactory.getLogger(CustomOidcUserService.class);
 
     private final ApplicationUserService userService;
 
-    public CustomOAuth2UserService(ApplicationUserService userService) {
+    public CustomOidcUserService(ApplicationUserService userService) {
         this.userService = userService;
     }
 
     @Override
-    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        log.info("CustomOAuth2UserService.loadUser() called");
-        
-        OAuth2User oauth2User = super.loadUser(userRequest);
+    public OidcUser loadUser(OidcUserRequest userRequest) throws OAuth2AuthenticationException {
+        log.info("CustomOidcUserService.loadUser() called");
 
-        String email = oauth2User.getAttribute("email");
-        String name = oauth2User.getAttribute("name");
-        String googleId = oauth2User.getAttribute("sub");
+        OidcUser oidcUser = super.loadUser(userRequest);
 
-        log.info("Google OAuth user: email={}, name={}, googleId={}", email, name, googleId);
+        String email = oidcUser.getEmail();
+        String name = oidcUser.getFullName();
+        String googleId = oidcUser.getSubject();
+
+        log.info("Google OIDC user: email={}, name={}, googleId={}", email, name, googleId);
 
         if (email == null) {
             throw new OAuth2AuthenticationException("Email not available from Google");
@@ -58,10 +57,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         Collection<GrantedAuthority> authorities = mapRoleToAuthorities(user.getRole());
         log.info("Mapped authorities: {}", authorities);
 
-        return new CustomOAuth2User(oauth2User, user.getEmail(), authorities);
+        return new DefaultOidcUser(authorities, oidcUser.getIdToken(), oidcUser.getUserInfo(), "sub");
     }
-
-
 
     private Collection<GrantedAuthority> mapRoleToAuthorities(UserRole role) {
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));

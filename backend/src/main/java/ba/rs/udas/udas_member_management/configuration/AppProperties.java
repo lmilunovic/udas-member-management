@@ -5,19 +5,104 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ConfigurationProperties(prefix = "app")
-public record AppProperties(
-    String name,
-    String version,
-    Api api,
-    Security security
-) {
-    public record Api(
-        String prefix,
-        int pageSizeDefault,
-        int pageSizeMax
-    ) {}
+public class AppProperties {
+    private String name;
+    private String version;
+    private Api api;
+    private Admin admin;
+    private Security security;
 
-    public record Security(
-        String allowedDomain
-    ) {}
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public Api getApi() {
+        return api;
+    }
+
+    public void setApi(Api api) {
+        this.api = api;
+    }
+
+    public Admin getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(Admin admin) {
+        this.admin = admin;
+    }
+
+    public Security getSecurity() {
+        return security;
+    }
+
+    public void setSecurity(Security security) {
+        this.security = security;
+    }
+
+    public static class Api {
+        private String prefix;
+        private int pageSizeDefault = 20;
+        private int pageSizeMax = 100;
+
+        public String getPrefix() {
+            return prefix;
+        }
+
+        public void setPrefix(String prefix) {
+            this.prefix = prefix;
+        }
+
+        public int getPageSizeDefault() {
+            return pageSizeDefault;
+        }
+
+        public void setPageSizeDefault(int pageSizeDefault) {
+            this.pageSizeDefault = pageSizeDefault;
+        }
+
+        public int getPageSizeMax() {
+            return pageSizeMax;
+        }
+
+        public void setPageSizeMax(int pageSizeMax) {
+            this.pageSizeMax = pageSizeMax;
+        }
+    }
+
+    public static class Admin {
+        private String email;
+
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
+        }
+    }
+
+    public static class Security {
+        private String allowedDomain;
+
+        public String getAllowedDomain() {
+            return allowedDomain;
+        }
+
+        public void setAllowedDomain(String allowedDomain) {
+            this.allowedDomain = allowedDomain;
+        }
+    }
 }

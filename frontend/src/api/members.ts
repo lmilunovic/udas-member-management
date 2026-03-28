@@ -1,9 +1,9 @@
-import axios from 'axios';
-import { Member, MemberCreateRequest, PagedResponse } from './types';
+import { MembersApi, Configuration } from './generated';
+import type { Member } from './generated';
 
-const api = axios.create({
-  baseURL: '/api/v1',
-});
+export type { Member, PagedMember } from './generated';
+
+const api = new MembersApi(new Configuration({ basePath: '/api/v1' }));
 
 export interface MemberParams {
   page?: number;
@@ -18,18 +18,14 @@ export interface MemberParams {
 }
 
 export const membersApi = {
-  list: (params: MemberParams = {}) => 
-    api.get<PagedResponse<Member>>('/members', { params }).then(res => res.data),
-  
-  get: (id: string) => 
-    api.get<Member>(`/members/${id}`).then(res => res.data),
-  
-  create: (data: MemberCreateRequest) => 
-    api.post<Member>('/members', data).then(res => res.data),
-  
-  update: (id: string, data: MemberCreateRequest) => 
-    api.put<Member>(`/members/${id}`, data).then(res => res.data),
-  
-  delete: (id: string) => 
-    api.delete(`/members/${id}`),
+  list: (params: MemberParams = {}) =>
+    api.listMembers(
+      params.firstName, params.lastName, params.email,
+      params.phone, params.city, params.country,
+      params.page, params.size, params.sort
+    ).then(res => res.data),
+  get: (id: string) => api.getMember(id).then(res => res.data),
+  create: (data: Member) => api.createMember(data).then(res => res.data),
+  update: (id: string, data: Member) => api.updateMember(id, data).then(res => res.data),
+  delete: (id: string) => api.deleteMember(id),
 };

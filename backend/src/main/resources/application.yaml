@@ -23,3 +23,4 @@ app:
     allowed-domain: "your-org.com"
   admin:
     email: ${ADMIN_EMAIL:}
+  frontend-url: ${FRONTEND_URL:http://localhost:5173}

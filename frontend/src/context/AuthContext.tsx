@@ -27,7 +27,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = () => {
-    window.location.href = '/logout';
+    window.location.href = '/api/v1/auth/logout';
   };
 
   return (
