@@ -19,13 +19,21 @@ export interface MemberParams {
 
 export const membersApi = {
   list: (params: MemberParams = {}) =>
-    api.listMembers(
-      params.firstName, params.lastName, params.email,
-      params.phone, params.city, params.country,
-      params.page, params.size, params.sort
-    ).then(res => res.data),
-  get: (id: string) => api.getMember(id).then(res => res.data),
-  create: (data: Member) => api.createMember(data).then(res => res.data),
-  update: (id: string, data: Member) => api.updateMember(id, data).then(res => res.data),
+    api
+      .listMembers(
+        params.firstName,
+        params.lastName,
+        params.email,
+        params.phone,
+        params.city,
+        params.country,
+        params.page,
+        params.size,
+        params.sort
+      )
+      .then((res) => res.data),
+  get: (id: string) => api.getMember(id).then((res) => res.data),
+  create: (data: Member) => api.createMember(data).then((res) => res.data),
+  update: (id: string, data: Member) => api.updateMember(id, data).then((res) => res.data),
   delete: (id: string) => api.deleteMember(id),
 };

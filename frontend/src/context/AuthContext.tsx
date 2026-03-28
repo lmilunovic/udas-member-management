@@ -1,5 +1,6 @@
-import { createContext, useState, useEffect, ReactNode } from 'react';
-import { CurrentUser } from '../api/types';
+import { createContext, useState, useEffect, type ReactNode } from 'react';
+
+import { type CurrentUser } from '../api/types';
 import { usersApi } from '../api/users';
 
 interface AuthContextType {
@@ -9,6 +10,7 @@ interface AuthContextType {
   logout: () => void;
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -16,7 +18,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    usersApi.getCurrentUser()
+    usersApi
+      .getCurrentUser()
       .then(setUser)
       .catch(() => setUser(null))
       .finally(() => setIsLoading(false));

@@ -1,4 +1,5 @@
 import { Outlet, Link, useLocation, Navigate } from 'react-router-dom';
+
 import { useAuth } from '../../hooks/useAuth';
 
 export default function Layout() {
@@ -20,7 +21,7 @@ export default function Layout() {
         <div className="max-w-7xl mx-auto px-4 h-15 flex items-center gap-8">
           <h1 className="text-xl font-bold text-blue-600">UDAS Members</h1>
           <nav className="flex gap-2 flex-1">
-            {navItems.map(item => (
+            {navItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}

@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
+
 import { usersApi } from '../../api/users';
 
 export default function UserList() {
@@ -13,7 +14,7 @@ export default function UserList() {
   const deleteMutation = useMutation({
     mutationFn: usersApi.delete,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['users'] });
+      void queryClient.invalidateQueries({ queryKey: ['users'] });
     },
   });
 
@@ -21,7 +22,10 @@ export default function UserList() {
     <div>
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-semibold">Users</h2>
-        <Link to="/users/new" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+        <Link
+          to="/users/new"
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
           Add User
         </Link>
       </div>
@@ -42,7 +46,7 @@ export default function UserList() {
               </tr>
             </thead>
             <tbody>
-              {data?.content.map(user => (
+              {data?.content.map((user) => (
                 <tr key={user.id} className="border-t">
                   <td className="px-4 py-3">{user.name}</td>
                   <td className="px-4 py-3">{user.email}</td>
@@ -51,13 +55,13 @@ export default function UserList() {
                   <td className="px-4 py-3">{new Date(user.createdAt).toLocaleDateString()}</td>
                   <td className="px-4 py-3">
                     <div className="flex gap-2">
-                      <Link 
+                      <Link
                         to={`/users/${user.id}/edit`}
                         className="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300"
                       >
                         Edit
                       </Link>
-                      <button 
+                      <button
                         className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
                         onClick={() => {
                           if (confirm('Delete this user?')) {
