@@ -3,7 +3,9 @@ import type { Member } from './generated';
 
 export type { Member, PagedMember } from './generated';
 
-const api = new MembersApi(new Configuration({ basePath: '/api/v1' }));
+const api = new MembersApi(
+  new Configuration({ basePath: import.meta.env.VITE_BACKEND_URL || '/api/v1' })
+);
 
 export interface MemberParams {
   page?: number;

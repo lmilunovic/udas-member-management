@@ -10,7 +10,6 @@ public class AppProperties {
     private String version;
     private Api api;
     private Admin admin;
-    private Security security;
 
     public String getName() {
         return name;
@@ -44,13 +43,6 @@ public class AppProperties {
         this.admin = admin;
     }
 
-    public Security getSecurity() {
-        return security;
-    }
-
-    public void setSecurity(Security security) {
-        this.security = security;
-    }
 
     public static class Api {
         private String prefix;
@@ -94,15 +86,4 @@ public class AppProperties {
         }
     }
 
-    public static class Security {
-        private String allowedDomain;
-
-        public String getAllowedDomain() {
-            return allowedDomain;
-        }
-
-        public void setAllowedDomain(String allowedDomain) {
-            this.allowedDomain = allowedDomain;
-        }
-    }
 }

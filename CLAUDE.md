@@ -79,7 +79,7 @@ Key env vars in `.env` (used by docker-compose):
 - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` — Google OAuth2 credentials
 - `ADMIN_EMAIL` — Email that gets ADMIN role on first login
 - `DB_*` — Database connection settings
-- `VITE_API_URL` — Backend URL for frontend (default: `http://localhost:8080/api/v1`)
+- `VITE_BACKEND_URL` — Backend API base URL for frontend (default: `http://localhost:8080/api/v1`; dev uses Vite proxy so this only matters in prod)
 
 ### Testing
 

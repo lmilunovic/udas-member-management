@@ -3,7 +3,9 @@ import type { ApplicationUserRequest } from './generated';
 
 export type { ApplicationUser, ApplicationUserRequest } from './generated';
 
-const api = new UsersApi(new Configuration({ basePath: '/api/v1' }));
+const api = new UsersApi(
+  new Configuration({ basePath: import.meta.env.VITE_BACKEND_URL || '/api/v1' })
+);
 
 export const usersApi = {
   list: () => api.listUsers().then((res) => res.data),

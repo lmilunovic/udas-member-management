@@ -19,8 +19,7 @@ app:
     prefix: "/api/v1"
     page-size-default: 20
     page-size-max: 100
-  security:
-    allowed-domain: "your-org.com"
+
   admin:
     email: ${ADMIN_EMAIL:}
   frontend-url: ${FRONTEND_URL:http://localhost:5173}
