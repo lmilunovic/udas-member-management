@@ -81,9 +81,7 @@ export default function UserList() {
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Users</h1>
           {!isLoading && (
-            <p className="text-sm text-muted-foreground mt-0.5">
-              {data?.totalElements ?? 0} users
-            </p>
+            <p className="text-sm text-muted-foreground mt-0.5">{data?.totalElements ?? 0} users</p>
           )}
         </div>
         <Button asChild>
@@ -145,11 +143,7 @@ export default function UserList() {
                       <Button asChild variant="outline" size="sm">
                         <Link to={`/users/${user.id}/edit`}>Edit</Link>
                       </Button>
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => setUserToDelete(user)}
-                      >
+                      <Button variant="destructive" size="sm" onClick={() => setUserToDelete(user)}>
                         Delete
                       </Button>
                     </div>
