@@ -1,3 +1,7 @@
+app:
+  admin:
+    email: "admin@test.com"
+
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/testdb

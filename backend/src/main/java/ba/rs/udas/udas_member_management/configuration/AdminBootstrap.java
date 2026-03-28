@@ -3,6 +3,7 @@ package ba.rs.udas.udas_member_management.configuration;
 import ba.rs.udas.udas_member_management.service.ApplicationUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -14,16 +15,17 @@ public class AdminBootstrap {
 
     private final ApplicationUserService userService;
 
+    @Value("${app.admin.email:}")
+    private String adminEmail;
+
     public AdminBootstrap(ApplicationUserService userService) {
         this.userService = userService;
     }
 
     @EventListener(ApplicationReadyEvent.class)
     public void bootstrapAdminUser() {
-        String adminEmail = System.getenv("ADMIN_EMAIL");
-        
         if (adminEmail == null || adminEmail.isBlank()) {
-            log.info("ADMIN_EMAIL environment variable not set, skipping admin bootstrap");
+            log.info("Admin email not configured, skipping admin bootstrap");
             return;
         }
 

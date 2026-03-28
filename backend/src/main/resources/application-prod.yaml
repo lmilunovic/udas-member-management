@@ -24,6 +24,8 @@ app:
     prefix: "/api/v1"
     page-size-default: 20
     page-size-max: 100
+  admin:
+    email: ${ADMIN_EMAIL:}
   security:
     allowed-domain: ${APP_ALLOWED_DOMAIN}
     admin-emails: ${APP_ADMIN_EMAILS}

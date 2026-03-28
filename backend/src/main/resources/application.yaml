@@ -21,3 +21,5 @@ app:
     page-size-max: 100
   security:
     allowed-domain: "your-org.com"
+  admin:
+    email: ${ADMIN_EMAIL:}
