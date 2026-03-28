@@ -10,6 +10,7 @@ UDAS Member Management is a full-stack web app for managing organization members
 
 - NEVER use System.getenv() to access environment variables. Variables should be passed via application properties.
 - ALWAYS build and run tests when finished
+- NEVER exclude tests from coverage report unless explicitly told
 
 ## Commands
 

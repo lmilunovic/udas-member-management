@@ -36,7 +36,9 @@ public class ApplicationUserController implements UsersApi {
         if (auth == null || !auth.isAuthenticated()) {
             return ResponseEntity.status(401).build();
         }
-        OidcUser oidcUser = (OidcUser) auth.getPrincipal();
+        if (!(auth.getPrincipal() instanceof OidcUser oidcUser)) {
+            return ResponseEntity.status(401).build();
+        }
         return userService.findByEmail(oidcUser.getEmail())
                 .map(user -> ResponseEntity.ok(userMapper.toModel(user)))
                 .orElse(ResponseEntity.notFound().build());

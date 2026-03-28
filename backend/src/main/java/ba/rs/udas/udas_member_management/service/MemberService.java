@@ -25,8 +25,12 @@ public class MemberService {
         return memberMapper.toModel(saved);
     }
 
-    public void deleteMember(UUID id) {
+    public boolean deleteMember(UUID id) {
+        if (!memberRepository.existsById(id)) {
+            return false;
+        }
         memberRepository.deleteById(id);
+        return true;
     }
 
     public Member getMember(UUID id) {

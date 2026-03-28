@@ -40,7 +40,10 @@ public class MemberController implements MembersApi {
 
     @Override
     public ResponseEntity<Void> deleteMember(UUID id) {
-        memberService.deleteMember(id);
+        boolean deleted = memberService.deleteMember(id);
+        if (!deleted) {
+            return ResponseEntity.notFound().build();
+        }
         return ResponseEntity.noContent().build();
     }
 

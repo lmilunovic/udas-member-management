@@ -18,6 +18,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -135,16 +136,33 @@ class MemberServiceTest {
     }
 
     @Test
-    @DisplayName("deleteMember should call repository deleteById")
-    void deleteMember_whenCalled_thenDeletesById() {
+    @DisplayName("deleteMember should return true and call deleteById when member exists")
+    void deleteMember_whenExists_thenDeletesAndReturnsTrue() {
         // Given
         UUID id = UUID.randomUUID();
+        when(memberRepository.existsById(id)).thenReturn(true);
         doNothing().when(memberRepository).deleteById(id);
 
         // When
-        memberService.deleteMember(id);
+        boolean result = memberService.deleteMember(id);
 
         // Then
+        assertThat(result).isTrue();
         verify(memberRepository).deleteById(id);
+    }
+
+    @Test
+    @DisplayName("deleteMember should return false and skip deleteById when member not found")
+    void deleteMember_whenNotFound_thenReturnsFalse() {
+        // Given
+        UUID id = UUID.randomUUID();
+        when(memberRepository.existsById(id)).thenReturn(false);
+
+        // When
+        boolean result = memberService.deleteMember(id);
+
+        // Then
+        assertThat(result).isFalse();
+        verify(memberRepository, never()).deleteById(any());
     }
 }

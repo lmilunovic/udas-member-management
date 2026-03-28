@@ -3,8 +3,10 @@ package ba.rs.udas.udas_member_management.configuration;
 import ba.rs.udas.udas_member_management.service.CustomOidcUserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -44,12 +46,12 @@ public class SecurityConfig {
                 .maximumSessions(1)
             )
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/api/v1/health", "/api/v1").permitAll()
-                .requestMatchers("/api/v1/auth/logout").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/v1/members").hasAnyRole("READ_ONLY", "READ_WRITE", "ADMIN")
-                .requestMatchers(HttpMethod.GET, "/api/v1/members/**").hasAnyRole("READ_ONLY", "READ_WRITE", "ADMIN")
-                .requestMatchers("/api/v1/members/**").hasAnyRole("READ_WRITE", "ADMIN")
-                .requestMatchers("/api/v1/users/**").hasRole("ADMIN")
+                .requestMatchers(antMatcher("/api/v1/health"), antMatcher("/api/v1")).permitAll()
+                .requestMatchers(antMatcher("/api/v1/auth/logout")).permitAll()
+                .requestMatchers(antMatcher(HttpMethod.GET, "/api/v1/members"), antMatcher(HttpMethod.GET, "/api/v1/members/**")).hasAnyRole("READ_ONLY", "READ_WRITE", "ADMIN")
+                .requestMatchers(antMatcher("/api/v1/members"), antMatcher("/api/v1/members/**")).hasAnyRole("READ_WRITE", "ADMIN")
+                .requestMatchers(antMatcher("/api/v1/users/me")).authenticated()
+                .requestMatchers(antMatcher("/api/v1/users"), antMatcher("/api/v1/users/**")).hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
             .oauth2Login(oauth2 -> oauth2

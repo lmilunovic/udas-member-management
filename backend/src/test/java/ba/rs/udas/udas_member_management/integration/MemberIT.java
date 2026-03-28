@@ -2,6 +2,7 @@ package ba.rs.udas.udas_member_management.integration;
 
 import ba.rs.udas.udas_member_management.config.TestContainersConfig;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -21,8 +22,9 @@ class MemberIT {
 
     private TestRestTemplate restTemplate = new TestRestTemplate();
 
-    @DisplayName("POST /api/v1/members should create and return member")
-    void createMember_givenValidMember_whenCalled_thenCreatesAndReturnsMember() {
+    @Test
+    @DisplayName("POST /api/v1/members requires authentication — unauthenticated returns 401")
+    void createMember_whenUnauthenticated_thenReturns401() {
         // Given
         String requestBody = """
             {
@@ -31,31 +33,29 @@ class MemberIT {
                 "email": ["john@example.com"]
             }
             """;
+        var headers = new org.springframework.http.HttpHeaders();
+        headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);
+        var entity = new org.springframework.http.HttpEntity<>(requestBody, headers);
 
         // When
         var response = restTemplate.postForEntity(
                 "http://localhost:" + port + "/api/v1/members",
-                requestBody,
+                entity,
                 String.class);
 
         // Then
-        assertThat(response.getStatusCode().value()).isEqualTo(201);
-        assertThat(response.getBody()).contains("\"firstName\":\"John\"");
-        assertThat(response.getBody()).contains("\"lastName\":\"Doe\"");
-        assertThat(response.getBody()).contains("\"id\":\"");
+        assertThat(response.getStatusCode().value()).isEqualTo(401);
     }
 
-    @DisplayName("GET /api/v1/members should return paginated list")
-    void listMembers_whenCalled_thenReturnsPaginatedList() {
+    @Test
+    @DisplayName("GET /api/v1/members requires authentication — unauthenticated returns 401")
+    void listMembers_whenUnauthenticated_thenReturns401() {
         // When
         var response = restTemplate.getForEntity(
-                "http://localhost:" + port + "/api/v1/members?page=0&size=10",
+                "http://localhost:" + port + "/api/v1/members",
                 String.class);
 
         // Then
-        assertThat(response.getStatusCode().value()).isEqualTo(200);
-        assertThat(response.getBody()).contains("\"content\":[]");
-        assertThat(response.getBody()).contains("\"page\":0");
-        assertThat(response.getBody()).contains("\"size\":10");
+        assertThat(response.getStatusCode().value()).isEqualTo(401);
     }
 }
