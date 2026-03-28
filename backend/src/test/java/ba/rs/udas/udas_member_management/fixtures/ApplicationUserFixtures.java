@@ -3,7 +3,6 @@ package ba.rs.udas.udas_member_management.fixtures;
 import ba.rs.udas.udas_member_management.entity.ApplicationUser;
 import ba.rs.udas.udas_member_management.entity.UserRole;
 import ba.rs.udas.udas_member_management.model.ApplicationUserRequest;
-
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
@@ -50,7 +49,8 @@ public class ApplicationUserFixtures {
                 .build();
     }
 
-    public static ba.rs.udas.udas_member_management.model.ApplicationUser applicationUserModelJohn() {
+    public static ba.rs.udas.udas_member_management.model.ApplicationUser
+            applicationUserModelJohn() {
         return ba.rs.udas.udas_member_management.model.ApplicationUser.builder()
                 .id(UUID.randomUUID())
                 .email("john@example.com")

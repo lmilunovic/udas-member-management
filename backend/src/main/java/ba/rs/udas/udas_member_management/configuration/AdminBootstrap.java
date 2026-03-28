@@ -35,6 +35,7 @@ public class AdminBootstrap {
         }
 
         var admin = userService.createAdminUser(adminEmail);
-        log.info("Bootstrap admin user created: {} with role {}", admin.getEmail(), admin.getRole());
+        log.info(
+                "Bootstrap admin user created: {} with role {}", admin.getEmail(), admin.getRole());
     }
 }

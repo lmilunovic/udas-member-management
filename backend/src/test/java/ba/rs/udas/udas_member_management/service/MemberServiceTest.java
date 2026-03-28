@@ -1,20 +1,5 @@
 package ba.rs.udas.udas_member_management.service;
 
-import ba.rs.udas.udas_member_management.fixtures.MemberFixtures;
-import ba.rs.udas.udas_member_management.mapper.MemberMapper;
-import ba.rs.udas.udas_member_management.model.Member;
-import ba.rs.udas.udas_member_management.repository.MemberRepository;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
@@ -22,18 +7,29 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import ba.rs.udas.udas_member_management.fixtures.MemberFixtures;
+import ba.rs.udas.udas_member_management.mapper.MemberMapper;
+import ba.rs.udas.udas_member_management.model.Member;
+import ba.rs.udas.udas_member_management.repository.MemberRepository;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 @DisplayName("MemberService operations")
 @ExtendWith(MockitoExtension.class)
 class MemberServiceTest {
 
-    @Mock
-    private MemberRepository memberRepository;
+    @Mock private MemberRepository memberRepository;
 
-    @Mock
-    private MemberMapper memberMapper;
+    @Mock private MemberMapper memberMapper;
 
-    @InjectMocks
-    private MemberService memberService;
+    @InjectMocks private MemberService memberService;
 
     @Test
     @DisplayName("createMember should save and return member")

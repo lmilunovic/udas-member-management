@@ -1,11 +1,19 @@
 package ba.rs.udas.udas_member_management.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import ba.rs.udas.udas_member_management.entity.ApplicationUser;
-import ba.rs.udas.udas_member_management.entity.UserRole;
 import ba.rs.udas.udas_member_management.fixtures.ApplicationUserFixtures;
 import ba.rs.udas.udas_member_management.mapper.ApplicationUserMapper;
 import ba.rs.udas.udas_member_management.model.ApplicationUserRequest;
 import ba.rs.udas.udas_member_management.repository.ApplicationUserRepository;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,28 +21,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @DisplayName("ApplicationUserService operations")
 @ExtendWith(MockitoExtension.class)
 class ApplicationUserServiceTest {
 
-    @Mock
-    private ApplicationUserRepository userRepository;
+    @Mock private ApplicationUserRepository userRepository;
 
-    @Mock
-    private ApplicationUserMapper userMapper;
+    @Mock private ApplicationUserMapper userMapper;
 
-    @InjectMocks
-    private ApplicationUserService userService;
+    @InjectMocks private ApplicationUserService userService;
 
     @Test
     @DisplayName("createUser should save and return user")
@@ -138,7 +133,7 @@ class ApplicationUserServiceTest {
         ApplicationUserRequest request = ApplicationUserFixtures.applicationUserRequestJohn();
         ApplicationUser existing = ApplicationUserFixtures.applicationUserJohn();
         existing.setId(id);
-        
+
         when(userRepository.findById(id)).thenReturn(Optional.of(existing));
         when(userRepository.save(any(ApplicationUser.class))).thenReturn(existing);
 
@@ -203,7 +198,7 @@ class ApplicationUserServiceTest {
         String name = "John Updated";
         String googleId = "google-12345";
         ApplicationUser existing = ApplicationUserFixtures.applicationUserJohn();
-        
+
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(existing));
         when(userRepository.save(any(ApplicationUser.class))).thenReturn(existing);
 

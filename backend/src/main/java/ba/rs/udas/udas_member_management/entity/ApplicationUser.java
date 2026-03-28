@@ -1,10 +1,17 @@
 package ba.rs.udas.udas_member_management.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
-
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import java.time.OffsetDateTime;
 import java.util.UUID;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "application_users")
@@ -14,8 +21,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class ApplicationUser {
 
-    @Id
-    private UUID id;
+    @Id private UUID id;
 
     @Column(name = "email", unique = true, nullable = false)
     private String email;

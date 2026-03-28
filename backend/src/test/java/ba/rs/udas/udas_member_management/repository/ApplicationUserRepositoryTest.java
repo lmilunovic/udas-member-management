@@ -1,8 +1,13 @@
 package ba.rs.udas.udas_member_management.repository;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import ba.rs.udas.udas_member_management.config.TestContainersConfig;
 import ba.rs.udas.udas_member_management.entity.ApplicationUser;
 import ba.rs.udas.udas_member_management.entity.UserRole;
+import java.time.OffsetDateTime;
+import java.util.Optional;
+import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,33 +16,26 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 
-import java.time.OffsetDateTime;
-import java.util.Optional;
-import java.util.UUID;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
 @DisplayName("ApplicationUserRepository — custom query methods")
 @DataJpaTest
 @Import(TestContainersConfig.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class ApplicationUserRepositoryTest {
 
-    @Autowired
-    TestEntityManager entityManager;
+    @Autowired TestEntityManager entityManager;
 
-    @Autowired
-    ApplicationUserRepository repository;
+    @Autowired ApplicationUserRepository repository;
 
     private ApplicationUser persistUser(String email) {
-        ApplicationUser user = ApplicationUser.builder()
-                .id(UUID.randomUUID())
-                .email(email)
-                .name("Test User")
-                .role(UserRole.READ_ONLY)
-                .active(true)
-                .createdAt(OffsetDateTime.now())
-                .build();
+        ApplicationUser user =
+                ApplicationUser.builder()
+                        .id(UUID.randomUUID())
+                        .email(email)
+                        .name("Test User")
+                        .role(UserRole.READ_ONLY)
+                        .active(true)
+                        .createdAt(OffsetDateTime.now())
+                        .build();
         entityManager.persistAndFlush(user);
         return user;
     }

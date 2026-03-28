@@ -17,7 +17,8 @@ public interface ApplicationUserMapper {
         return entity;
     }
 
-    default ApplicationUser toEntityFromModel(ba.rs.udas.udas_member_management.model.ApplicationUser model) {
+    default ApplicationUser toEntityFromModel(
+            ba.rs.udas.udas_member_management.model.ApplicationUser model) {
         ApplicationUser entity = new ApplicationUser();
         entity.setId(model.getId());
         entity.setEmail(model.getEmail());
@@ -28,7 +29,8 @@ public interface ApplicationUserMapper {
         return entity;
     }
 
-    default ba.rs.udas.udas_member_management.model.ApplicationUser toModel(ApplicationUser entity) {
+    default ba.rs.udas.udas_member_management.model.ApplicationUser toModel(
+            ApplicationUser entity) {
         if (entity == null) return null;
         return ba.rs.udas.udas_member_management.model.ApplicationUser.builder()
                 .id(entity.getId())
@@ -49,7 +51,8 @@ public interface ApplicationUserMapper {
         };
     }
 
-    default UserRole mapRoleToEntityFromModel(ba.rs.udas.udas_member_management.model.ApplicationUser.RoleEnum role) {
+    default UserRole mapRoleToEntityFromModel(
+            ba.rs.udas.udas_member_management.model.ApplicationUser.RoleEnum role) {
         if (role == null) return UserRole.READ_ONLY;
         return switch (role) {
             case READ_ONLY -> UserRole.READ_ONLY;
@@ -58,11 +61,15 @@ public interface ApplicationUserMapper {
         };
     }
 
-    default ba.rs.udas.udas_member_management.model.ApplicationUser.RoleEnum mapRoleToModel(UserRole role) {
-        if (role == null) return ba.rs.udas.udas_member_management.model.ApplicationUser.RoleEnum.READ_ONLY;
+    default ba.rs.udas.udas_member_management.model.ApplicationUser.RoleEnum mapRoleToModel(
+            UserRole role) {
+        if (role == null)
+            return ba.rs.udas.udas_member_management.model.ApplicationUser.RoleEnum.READ_ONLY;
         return switch (role) {
-            case READ_ONLY -> ba.rs.udas.udas_member_management.model.ApplicationUser.RoleEnum.READ_ONLY;
-            case READ_WRITE -> ba.rs.udas.udas_member_management.model.ApplicationUser.RoleEnum.READ_WRITE;
+            case READ_ONLY ->
+                    ba.rs.udas.udas_member_management.model.ApplicationUser.RoleEnum.READ_ONLY;
+            case READ_WRITE ->
+                    ba.rs.udas.udas_member_management.model.ApplicationUser.RoleEnum.READ_WRITE;
             case ADMIN -> ba.rs.udas.udas_member_management.model.ApplicationUser.RoleEnum.ADMIN;
         };
     }

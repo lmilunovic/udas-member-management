@@ -3,10 +3,9 @@ package ba.rs.udas.udas_member_management.service;
 import ba.rs.udas.udas_member_management.mapper.MemberMapper;
 import ba.rs.udas.udas_member_management.model.Member;
 import ba.rs.udas.udas_member_management.repository.MemberRepository;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.UUID;
+import org.springframework.stereotype.Service;
 
 @Service
 public class MemberService {
@@ -34,25 +33,23 @@ public class MemberService {
     }
 
     public Member getMember(UUID id) {
-        return memberRepository.findById(id)
-                .map(memberMapper::toModel)
-                .orElse(null);
+        return memberRepository.findById(id).map(memberMapper::toModel).orElse(null);
     }
 
     public List<Member> findAll() {
-        return memberRepository.findAll().stream()
-                .map(memberMapper::toModel)
-                .toList();
+        return memberRepository.findAll().stream().map(memberMapper::toModel).toList();
     }
 
     public Member updateMember(UUID id, Member member) {
-        return memberRepository.findById(id)
-                .map(existing -> {
-                    var entity = memberMapper.toEntity(member);
-                    entity.setId(id);
-                    var saved = memberRepository.save(entity);
-                    return memberMapper.toModel(saved);
-                })
+        return memberRepository
+                .findById(id)
+                .map(
+                        existing -> {
+                            var entity = memberMapper.toEntity(member);
+                            entity.setId(id);
+                            var saved = memberRepository.save(entity);
+                            return memberMapper.toModel(saved);
+                        })
                 .orElse(null);
     }
 }

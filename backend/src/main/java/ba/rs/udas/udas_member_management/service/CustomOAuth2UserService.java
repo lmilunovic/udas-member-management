@@ -2,19 +2,18 @@ package ba.rs.udas.udas_member_management.service;
 
 import ba.rs.udas.udas_member_management.entity.ApplicationUser;
 import ba.rs.udas.udas_member_management.entity.UserRole;
+import java.util.Collection;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.context.annotation.Primary;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-
-import java.util.Collection;
-import java.util.List;
 
 @Service
 @Primary
@@ -48,10 +47,19 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             throw new OAuth2AuthenticationException("Email not available from Google");
         }
 
-        ApplicationUser user = userService.findByEmail(email)
-                .orElseThrow(() -> new OAuth2AuthenticationException("Access denied. User not registered."));
+        ApplicationUser user =
+                userService
+                        .findByEmail(email)
+                        .orElseThrow(
+                                () ->
+                                        new OAuth2AuthenticationException(
+                                                "Access denied. User not registered."));
 
-        log.info("Database user found: email={}, role={}, active={}", user.getEmail(), user.getRole(), user.getActive());
+        log.info(
+                "Database user found: email={}, role={}, active={}",
+                user.getEmail(),
+                user.getRole(),
+                user.getActive());
 
         if (!user.getActive()) {
             throw new OAuth2AuthenticationException("User account is disabled");
@@ -64,8 +72,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         return new CustomOAuth2User(oauth2User, user.getEmail(), authorities);
     }
-
-
 
     private Collection<GrantedAuthority> mapRoleToAuthorities(UserRole role) {
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));

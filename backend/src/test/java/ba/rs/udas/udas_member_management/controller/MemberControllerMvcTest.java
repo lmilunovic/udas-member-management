@@ -1,25 +1,5 @@
 package ba.rs.udas.udas_member_management.controller;
 
-import ba.rs.udas.udas_member_management.configuration.SecurityConfig;
-import ba.rs.udas.udas_member_management.fixtures.MemberFixtures;
-import ba.rs.udas.udas_member_management.model.Member;
-import ba.rs.udas.udas_member_management.service.CustomOidcUserService;
-import ba.rs.udas.udas_member_management.service.MemberService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
-import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.List;
-import java.util.UUID;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
@@ -31,44 +11,62 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import ba.rs.udas.udas_member_management.configuration.SecurityConfig;
+import ba.rs.udas.udas_member_management.fixtures.MemberFixtures;
+import ba.rs.udas.udas_member_management.model.Member;
+import ba.rs.udas.udas_member_management.service.CustomOidcUserService;
+import ba.rs.udas.udas_member_management.service.MemberService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
+import java.util.UUID;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.web.servlet.MockMvc;
+
 @DisplayName("MemberController — HTTP layer tests")
 @WebMvcTest(MemberController.class)
 @Import(SecurityConfig.class)
-@TestPropertySource(properties = {
-        "app.frontend-url=http://localhost:5173",
-        "spring.security.oauth2.client.registration.google.client-id=test-client-id",
-        "spring.security.oauth2.client.registration.google.client-secret=test-client-secret"
-})
+@TestPropertySource(
+        properties = {
+            "app.frontend-url=http://localhost:5173",
+            "spring.security.oauth2.client.registration.google.client-id=test-client-id",
+            "spring.security.oauth2.client.registration.google.client-secret=test-client-secret"
+        })
 class MemberControllerMvcTest {
 
-    @Autowired
-    MockMvc mockMvc;
+    @Autowired MockMvc mockMvc;
 
-    @Autowired
-    ObjectMapper objectMapper;
+    @Autowired ObjectMapper objectMapper;
 
-    @MockBean
-    MemberService memberService;
+    @MockBean MemberService memberService;
 
-    @MockBean
-    CustomOidcUserService customOidcUserService;
+    @MockBean CustomOidcUserService customOidcUserService;
 
     // --- Authentication / Authorization ---
 
     @Test
     @DisplayName("GET /api/v1/members without authentication returns 401")
     void listMembers_whenUnauthenticated_returns401() throws Exception {
-        mockMvc.perform(get("/api/v1/members"))
-                .andExpect(status().isUnauthorized());
+        mockMvc.perform(get("/api/v1/members")).andExpect(status().isUnauthorized());
     }
 
     @Test
     @DisplayName("POST /api/v1/members with READ_ONLY role returns 403")
     @WithMockUser(roles = "READ_ONLY")
     void createMember_whenReadOnly_returns403() throws Exception {
-        mockMvc.perform(post("/api/v1/members")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(MemberFixtures.memberJohn())))
+        mockMvc.perform(
+                        post("/api/v1/members")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(
+                                        objectMapper.writeValueAsString(
+                                                MemberFixtures.memberJohn())))
                 .andExpect(status().isForbidden());
     }
 
@@ -101,9 +99,10 @@ class MemberControllerMvcTest {
         Member member = MemberFixtures.memberJohn();
         given(memberService.createMember(any(Member.class))).willReturn(member);
 
-        mockMvc.perform(post("/api/v1/members")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(member)))
+        mockMvc.perform(
+                        post("/api/v1/members")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(member)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.firstName").value("John"));
     }
@@ -127,8 +126,7 @@ class MemberControllerMvcTest {
         UUID id = UUID.randomUUID();
         given(memberService.getMember(id)).willReturn(null);
 
-        mockMvc.perform(get("/api/v1/members/{id}", id))
-                .andExpect(status().isNotFound());
+        mockMvc.perform(get("/api/v1/members/{id}", id)).andExpect(status().isNotFound());
     }
 
     @Test
@@ -139,9 +137,10 @@ class MemberControllerMvcTest {
         Member member = MemberFixtures.memberJohn();
         given(memberService.updateMember(eq(id), any(Member.class))).willReturn(member);
 
-        mockMvc.perform(put("/api/v1/members/{id}", id)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(member)))
+        mockMvc.perform(
+                        put("/api/v1/members/{id}", id)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(member)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstName").value("John"));
     }
@@ -153,9 +152,12 @@ class MemberControllerMvcTest {
         UUID id = UUID.randomUUID();
         given(memberService.updateMember(eq(id), any(Member.class))).willReturn(null);
 
-        mockMvc.perform(put("/api/v1/members/{id}", id)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(MemberFixtures.memberJohn())))
+        mockMvc.perform(
+                        put("/api/v1/members/{id}", id)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(
+                                        objectMapper.writeValueAsString(
+                                                MemberFixtures.memberJohn())))
                 .andExpect(status().isNotFound());
     }
 
@@ -166,8 +168,7 @@ class MemberControllerMvcTest {
         UUID id = UUID.randomUUID();
         given(memberService.deleteMember(id)).willReturn(true);
 
-        mockMvc.perform(delete("/api/v1/members/{id}", id))
-                .andExpect(status().isNoContent());
+        mockMvc.perform(delete("/api/v1/members/{id}", id)).andExpect(status().isNoContent());
 
         then(memberService).should().deleteMember(id);
     }
@@ -179,8 +180,7 @@ class MemberControllerMvcTest {
         UUID id = UUID.randomUUID();
         given(memberService.deleteMember(id)).willReturn(false);
 
-        mockMvc.perform(delete("/api/v1/members/{id}", id))
-                .andExpect(status().isNotFound());
+        mockMvc.perform(delete("/api/v1/members/{id}", id)).andExpect(status().isNotFound());
     }
 
     // --- Validation / GlobalExceptionHandler ---
@@ -191,7 +191,8 @@ class MemberControllerMvcTest {
     void createMember_whenEmailIsInvalid_returns400() throws Exception {
         // The Member model uses @lombok.NonNull (not Bean Validation @NotNull), so only
         // the @Email constraint on list items is enforced at the @Valid layer.
-        String bodyWithInvalidEmail = """
+        String bodyWithInvalidEmail =
+                """
                 {
                     "firstName": "John",
                     "lastName": "Doe",
@@ -199,9 +200,10 @@ class MemberControllerMvcTest {
                 }
                 """;
 
-        mockMvc.perform(post("/api/v1/members")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(bodyWithInvalidEmail))
+        mockMvc.perform(
+                        post("/api/v1/members")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(bodyWithInvalidEmail))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.title").value("Bad Request"));
     }
@@ -213,9 +215,12 @@ class MemberControllerMvcTest {
         given(memberService.createMember(any(Member.class)))
                 .willThrow(new IllegalArgumentException("Duplicate email"));
 
-        mockMvc.perform(post("/api/v1/members")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(MemberFixtures.memberJohn())))
+        mockMvc.perform(
+                        post("/api/v1/members")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(
+                                        objectMapper.writeValueAsString(
+                                                MemberFixtures.memberJohn())))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.detail").value("Duplicate email"));
     }
@@ -226,8 +231,8 @@ class MemberControllerMvcTest {
     @DisplayName("GET /api/v1/members?firstName=John filters results by first name")
     @WithMockUser(roles = "READ_ONLY")
     void listMembers_withFirstNameFilter_returnsOnlyMatchingMembers() throws Exception {
-        given(memberService.findAll()).willReturn(
-                List.of(MemberFixtures.memberJohn(), MemberFixtures.memberJane()));
+        given(memberService.findAll())
+                .willReturn(List.of(MemberFixtures.memberJohn(), MemberFixtures.memberJane()));
 
         mockMvc.perform(get("/api/v1/members").param("firstName", "John"))
                 .andExpect(status().isOk())
@@ -239,8 +244,8 @@ class MemberControllerMvcTest {
     @DisplayName("GET /api/v1/members?lastName=Doe filters results by last name")
     @WithMockUser(roles = "READ_ONLY")
     void listMembers_withLastNameFilter_returnsOnlyMatchingMembers() throws Exception {
-        given(memberService.findAll()).willReturn(
-                List.of(MemberFixtures.memberJohn(), MemberFixtures.memberJane()));
+        given(memberService.findAll())
+                .willReturn(List.of(MemberFixtures.memberJohn(), MemberFixtures.memberJane()));
 
         mockMvc.perform(get("/api/v1/members").param("lastName", "Doe"))
                 .andExpect(status().isOk())
@@ -252,8 +257,8 @@ class MemberControllerMvcTest {
     @DisplayName("GET /api/v1/members?email=jane filters results by email")
     @WithMockUser(roles = "READ_ONLY")
     void listMembers_withEmailFilter_returnsOnlyMatchingMembers() throws Exception {
-        given(memberService.findAll()).willReturn(
-                List.of(MemberFixtures.memberJohn(), MemberFixtures.memberJane()));
+        given(memberService.findAll())
+                .willReturn(List.of(MemberFixtures.memberJohn(), MemberFixtures.memberJane()));
 
         mockMvc.perform(get("/api/v1/members").param("email", "jane"))
                 .andExpect(status().isOk())
@@ -265,8 +270,8 @@ class MemberControllerMvcTest {
     @DisplayName("GET /api/v1/members?phone=%2B098 filters results by phone")
     @WithMockUser(roles = "READ_ONLY")
     void listMembers_withPhoneFilter_returnsOnlyMatchingMembers() throws Exception {
-        given(memberService.findAll()).willReturn(
-                List.of(MemberFixtures.memberJohn(), MemberFixtures.memberJane()));
+        given(memberService.findAll())
+                .willReturn(List.of(MemberFixtures.memberJohn(), MemberFixtures.memberJane()));
 
         mockMvc.perform(get("/api/v1/members").param("phone", "+098"))
                 .andExpect(status().isOk())
@@ -278,8 +283,8 @@ class MemberControllerMvcTest {
     @DisplayName("GET /api/v1/members?city=London filters results by city")
     @WithMockUser(roles = "READ_ONLY")
     void listMembers_withCityFilter_returnsOnlyMatchingMembers() throws Exception {
-        given(memberService.findAll()).willReturn(
-                List.of(MemberFixtures.memberJohn(), MemberFixtures.memberJane()));
+        given(memberService.findAll())
+                .willReturn(List.of(MemberFixtures.memberJohn(), MemberFixtures.memberJane()));
 
         mockMvc.perform(get("/api/v1/members").param("city", "London"))
                 .andExpect(status().isOk())
@@ -291,8 +296,8 @@ class MemberControllerMvcTest {
     @DisplayName("GET /api/v1/members?country=UK filters results by country")
     @WithMockUser(roles = "READ_ONLY")
     void listMembers_withCountryFilter_returnsOnlyMatchingMembers() throws Exception {
-        given(memberService.findAll()).willReturn(
-                List.of(MemberFixtures.memberJohn(), MemberFixtures.memberJane()));
+        given(memberService.findAll())
+                .willReturn(List.of(MemberFixtures.memberJohn(), MemberFixtures.memberJane()));
 
         mockMvc.perform(get("/api/v1/members").param("country", "UK"))
                 .andExpect(status().isOk())
@@ -312,11 +317,12 @@ class MemberControllerMvcTest {
     }
 
     @Test
-    @DisplayName("GET /api/v1/members?page=0&size=1 returns paginated results with correct metadata")
+    @DisplayName(
+            "GET /api/v1/members?page=0&size=1 returns paginated results with correct metadata")
     @WithMockUser(roles = "READ_ONLY")
     void listMembers_withPageAndSize_returnsPaginatedResults() throws Exception {
-        given(memberService.findAll()).willReturn(
-                List.of(MemberFixtures.memberJohn(), MemberFixtures.memberJane()));
+        given(memberService.findAll())
+                .willReturn(List.of(MemberFixtures.memberJohn(), MemberFixtures.memberJane()));
 
         mockMvc.perform(get("/api/v1/members").param("page", "0").param("size", "1"))
                 .andExpect(status().isOk())
@@ -334,9 +340,12 @@ class MemberControllerMvcTest {
         given(memberService.createMember(any(Member.class)))
                 .willThrow(new NullPointerException("unexpected null"));
 
-        mockMvc.perform(post("/api/v1/members")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(MemberFixtures.memberJohn())))
+        mockMvc.perform(
+                        post("/api/v1/members")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(
+                                        objectMapper.writeValueAsString(
+                                                MemberFixtures.memberJohn())))
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.title").value("Internal Server Error"));
     }
@@ -348,9 +357,12 @@ class MemberControllerMvcTest {
         given(memberService.createMember(any(Member.class)))
                 .willThrow(new RuntimeException("unexpected error"));
 
-        mockMvc.perform(post("/api/v1/members")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(MemberFixtures.memberJohn())))
+        mockMvc.perform(
+                        post("/api/v1/members")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(
+                                        objectMapper.writeValueAsString(
+                                                MemberFixtures.memberJohn())))
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.title").value("Internal Server Error"));
     }

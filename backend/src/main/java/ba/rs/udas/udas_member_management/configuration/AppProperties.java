@@ -43,7 +43,6 @@ public class AppProperties {
         this.admin = admin;
     }
 
-
     public static class Api {
         private String prefix;
         private int pageSizeDefault = 20;
@@ -85,5 +84,4 @@ public class AppProperties {
             this.email = email;
         }
     }
-
 }

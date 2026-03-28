@@ -1,5 +1,7 @@
 package ba.rs.udas.udas_member_management.mapper;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import ba.rs.udas.udas_member_management.entity.ApplicationUser;
 import ba.rs.udas.udas_member_management.entity.UserRole;
 import ba.rs.udas.udas_member_management.fixtures.ApplicationUserFixtures;
@@ -8,8 +10,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("ApplicationUserMapper operations")
 @ExtendWith(MockitoExtension.class)
@@ -21,11 +21,12 @@ class ApplicationUserMapperTest {
     @DisplayName("toEntity should convert request to entity")
     void toEntity_givenRequest_whenMapped_thenReturnsEntity() {
         // Given
-        ApplicationUserRequest request = ApplicationUserRequest.builder()
-                .email("john@example.com")
-                .role(ApplicationUserRequest.RoleEnum.READ_WRITE)
-                .active(true)
-                .build();
+        ApplicationUserRequest request =
+                ApplicationUserRequest.builder()
+                        .email("john@example.com")
+                        .role(ApplicationUserRequest.RoleEnum.READ_WRITE)
+                        .active(true)
+                        .build();
 
         // When
         ApplicationUser result = mapper.toEntity(request);
@@ -49,7 +50,10 @@ class ApplicationUserMapperTest {
         // Then
         assertThat(result).isNotNull();
         assertThat(result.getEmail()).isEqualTo("john@example.com");
-        assertThat(result.getRole()).isEqualTo(ba.rs.udas.udas_member_management.model.ApplicationUser.RoleEnum.READ_WRITE);
+        assertThat(result.getRole())
+                .isEqualTo(
+                        ba.rs.udas.udas_member_management.model.ApplicationUser.RoleEnum
+                                .READ_WRITE);
         assertThat(result.getActive()).isTrue();
     }
 
@@ -109,10 +113,13 @@ class ApplicationUserMapperTest {
         UserRole role = UserRole.READ_ONLY;
 
         // When
-        ba.rs.udas.udas_member_management.model.ApplicationUser.RoleEnum result = mapper.mapRoleToModel(role);
+        ba.rs.udas.udas_member_management.model.ApplicationUser.RoleEnum result =
+                mapper.mapRoleToModel(role);
 
         // Then
-        assertThat(result).isEqualTo(ba.rs.udas.udas_member_management.model.ApplicationUser.RoleEnum.READ_ONLY);
+        assertThat(result)
+                .isEqualTo(
+                        ba.rs.udas.udas_member_management.model.ApplicationUser.RoleEnum.READ_ONLY);
     }
 
     @Test
@@ -122,10 +129,14 @@ class ApplicationUserMapperTest {
         UserRole role = UserRole.READ_WRITE;
 
         // When
-        ba.rs.udas.udas_member_management.model.ApplicationUser.RoleEnum result = mapper.mapRoleToModel(role);
+        ba.rs.udas.udas_member_management.model.ApplicationUser.RoleEnum result =
+                mapper.mapRoleToModel(role);
 
         // Then
-        assertThat(result).isEqualTo(ba.rs.udas.udas_member_management.model.ApplicationUser.RoleEnum.READ_WRITE);
+        assertThat(result)
+                .isEqualTo(
+                        ba.rs.udas.udas_member_management.model.ApplicationUser.RoleEnum
+                                .READ_WRITE);
     }
 
     @Test
@@ -135,20 +146,25 @@ class ApplicationUserMapperTest {
         UserRole role = UserRole.ADMIN;
 
         // When
-        ba.rs.udas.udas_member_management.model.ApplicationUser.RoleEnum result = mapper.mapRoleToModel(role);
+        ba.rs.udas.udas_member_management.model.ApplicationUser.RoleEnum result =
+                mapper.mapRoleToModel(role);
 
         // Then
-        assertThat(result).isEqualTo(ba.rs.udas.udas_member_management.model.ApplicationUser.RoleEnum.ADMIN);
+        assertThat(result)
+                .isEqualTo(ba.rs.udas.udas_member_management.model.ApplicationUser.RoleEnum.ADMIN);
     }
 
     @Test
     @DisplayName("mapRoleToModel should return default when null")
     void mapRoleToModel_givenNullRole_whenMapped_thenReturnsDefaultRole() {
         // When
-        ba.rs.udas.udas_member_management.model.ApplicationUser.RoleEnum result = mapper.mapRoleToModel(null);
+        ba.rs.udas.udas_member_management.model.ApplicationUser.RoleEnum result =
+                mapper.mapRoleToModel(null);
 
         // Then
-        assertThat(result).isEqualTo(ba.rs.udas.udas_member_management.model.ApplicationUser.RoleEnum.READ_ONLY);
+        assertThat(result)
+                .isEqualTo(
+                        ba.rs.udas.udas_member_management.model.ApplicationUser.RoleEnum.READ_ONLY);
     }
 
     @Test
@@ -165,11 +181,12 @@ class ApplicationUserMapperTest {
     @DisplayName("toEntity should default active to true when request has null active")
     void toEntity_whenActiveIsNull_thenDefaultsToTrue() {
         // Given
-        ApplicationUserRequest request = ApplicationUserRequest.builder()
-                .email("john@example.com")
-                .role(ApplicationUserRequest.RoleEnum.READ_ONLY)
-                .active(null)
-                .build();
+        ApplicationUserRequest request =
+                ApplicationUserRequest.builder()
+                        .email("john@example.com")
+                        .role(ApplicationUserRequest.RoleEnum.READ_ONLY)
+                        .active(null)
+                        .build();
 
         // When
         ApplicationUser result = mapper.toEntity(request);
@@ -201,8 +218,9 @@ class ApplicationUserMapperTest {
     @DisplayName("mapRoleToEntityFromModel should map READ_ONLY correctly")
     void mapRoleToEntityFromModel_givenReadOnlyRole_whenMapped_thenReturnsEntityRole() {
         // When
-        UserRole result = mapper.mapRoleToEntityFromModel(
-                ba.rs.udas.udas_member_management.model.ApplicationUser.RoleEnum.READ_ONLY);
+        UserRole result =
+                mapper.mapRoleToEntityFromModel(
+                        ba.rs.udas.udas_member_management.model.ApplicationUser.RoleEnum.READ_ONLY);
 
         // Then
         assertThat(result).isEqualTo(UserRole.READ_ONLY);
@@ -212,8 +230,10 @@ class ApplicationUserMapperTest {
     @DisplayName("mapRoleToEntityFromModel should map READ_WRITE correctly")
     void mapRoleToEntityFromModel_givenReadWriteRole_whenMapped_thenReturnsEntityRole() {
         // When
-        UserRole result = mapper.mapRoleToEntityFromModel(
-                ba.rs.udas.udas_member_management.model.ApplicationUser.RoleEnum.READ_WRITE);
+        UserRole result =
+                mapper.mapRoleToEntityFromModel(
+                        ba.rs.udas.udas_member_management.model.ApplicationUser.RoleEnum
+                                .READ_WRITE);
 
         // Then
         assertThat(result).isEqualTo(UserRole.READ_WRITE);
@@ -223,8 +243,9 @@ class ApplicationUserMapperTest {
     @DisplayName("mapRoleToEntityFromModel should map ADMIN correctly")
     void mapRoleToEntityFromModel_givenAdminRole_whenMapped_thenReturnsEntityRole() {
         // When
-        UserRole result = mapper.mapRoleToEntityFromModel(
-                ba.rs.udas.udas_member_management.model.ApplicationUser.RoleEnum.ADMIN);
+        UserRole result =
+                mapper.mapRoleToEntityFromModel(
+                        ba.rs.udas.udas_member_management.model.ApplicationUser.RoleEnum.ADMIN);
 
         // Then
         assertThat(result).isEqualTo(UserRole.ADMIN);

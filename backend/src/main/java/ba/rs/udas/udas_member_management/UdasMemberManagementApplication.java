@@ -8,8 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 @ConfigurationPropertiesScan
 public class UdasMemberManagementApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(UdasMemberManagementApplication.class, args);
-	}
-
+    public static void main(String[] args) {
+        SpringApplication.run(UdasMemberManagementApplication.class, args);
+    }
 }

@@ -1,5 +1,7 @@
 package ba.rs.udas.udas_member_management.mapper;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import ba.rs.udas.udas_member_management.entity.MemberEntity;
 import ba.rs.udas.udas_member_management.fixtures.MemberFixtures;
 import ba.rs.udas.udas_member_management.model.Address;
@@ -8,8 +10,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("MemberMapper conversions")
 @ExtendWith(MockitoExtension.class)
@@ -21,17 +21,19 @@ class MemberMapperTest {
     @DisplayName("toEntity should map Member to MemberEntity with flat address")
     void toEntity_givenMemberWithAddress_mapsToEntityWithFlatAddress() {
         // Given
-        Member member = Member.builder()
-                .firstName("John")
-                .lastName("Doe")
-                .email(java.util.List.of("john@example.com"))
-                .address(Address.builder()
-                        .city("London")
-                        .street("Main St")
-                        .postalCode("SW1A 1AA")
-                        .country("UK")
-                        .build())
-                .build();
+        Member member =
+                Member.builder()
+                        .firstName("John")
+                        .lastName("Doe")
+                        .email(java.util.List.of("john@example.com"))
+                        .address(
+                                Address.builder()
+                                        .city("London")
+                                        .street("Main St")
+                                        .postalCode("SW1A 1AA")
+                                        .country("UK")
+                                        .build())
+                        .build();
 
         // When
         MemberEntity entity = memberMapper.toEntity(member);
@@ -68,16 +70,17 @@ class MemberMapperTest {
     @DisplayName("toModel should map MemberEntity to Member with nested address")
     void toModel_givenEntityWithFlatAddress_mapsToMemberWithNestedAddress() {
         // Given
-        MemberEntity entity = MemberEntity.builder()
-                .id(java.util.UUID.randomUUID())
-                .firstName("John")
-                .lastName("Doe")
-                .email(java.util.List.of("john@example.com"))
-                .city("London")
-                .street("Main St")
-                .postalCode("SW1A 1AA")
-                .country("UK")
-                .build();
+        MemberEntity entity =
+                MemberEntity.builder()
+                        .id(java.util.UUID.randomUUID())
+                        .firstName("John")
+                        .lastName("Doe")
+                        .email(java.util.List.of("john@example.com"))
+                        .city("London")
+                        .street("Main St")
+                        .postalCode("SW1A 1AA")
+                        .country("UK")
+                        .build();
 
         // When
         Member member = memberMapper.toModel(entity);

@@ -2,6 +2,8 @@ package ba.rs.udas.udas_member_management.service;
 
 import ba.rs.udas.udas_member_management.entity.ApplicationUser;
 import ba.rs.udas.udas_member_management.entity.UserRole;
+import java.util.Collection;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,9 +14,6 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Service;
-
-import java.util.Collection;
-import java.util.List;
 
 @Service
 public class CustomOidcUserService extends OidcUserService {
@@ -47,10 +46,19 @@ public class CustomOidcUserService extends OidcUserService {
             throw new OAuth2AuthenticationException("Email not available from Google");
         }
 
-        ApplicationUser user = userService.findByEmail(email)
-                .orElseThrow(() -> new OAuth2AuthenticationException("Access denied. User not registered."));
+        ApplicationUser user =
+                userService
+                        .findByEmail(email)
+                        .orElseThrow(
+                                () ->
+                                        new OAuth2AuthenticationException(
+                                                "Access denied. User not registered."));
 
-        log.info("Database user found: email={}, role={}, active={}", user.getEmail(), user.getRole(), user.getActive());
+        log.info(
+                "Database user found: email={}, role={}, active={}",
+                user.getEmail(),
+                user.getRole(),
+                user.getActive());
 
         if (!user.getActive()) {
             throw new OAuth2AuthenticationException("User account is disabled");
@@ -61,7 +69,8 @@ public class CustomOidcUserService extends OidcUserService {
         Collection<GrantedAuthority> authorities = mapRoleToAuthorities(user.getRole());
         log.info("Mapped authorities: {}", authorities);
 
-        return new DefaultOidcUser(authorities, oidcUser.getIdToken(), oidcUser.getUserInfo(), "sub");
+        return new DefaultOidcUser(
+                authorities, oidcUser.getIdToken(), oidcUser.getUserInfo(), "sub");
     }
 
     private Collection<GrantedAuthority> mapRoleToAuthorities(UserRole role) {

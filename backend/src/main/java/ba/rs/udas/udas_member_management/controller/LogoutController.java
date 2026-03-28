@@ -27,7 +27,7 @@ public class LogoutController {
         if (request.getSession(false) != null) {
             request.getSession().invalidate();
         }
-        
+
         return ResponseEntity.status(HttpStatus.FOUND)
                 .header("Location", frontendUrl + "/login?logout")
                 .build();

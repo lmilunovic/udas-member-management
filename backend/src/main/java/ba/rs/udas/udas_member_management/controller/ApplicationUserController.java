@@ -7,6 +7,8 @@ import ba.rs.udas.udas_member_management.model.ApplicationUserRequest;
 import ba.rs.udas.udas_member_management.model.PagedApplicationUser;
 import ba.rs.udas.udas_member_management.service.ApplicationUserService;
 import jakarta.validation.Valid;
+import java.util.List;
+import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -15,9 +17,6 @@ import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.UUID;
-
 @RestController
 @RequestMapping("/api/v1")
 public class ApplicationUserController implements UsersApi {
@@ -25,13 +24,15 @@ public class ApplicationUserController implements UsersApi {
     private final ApplicationUserService userService;
     private final ApplicationUserMapper userMapper;
 
-    public ApplicationUserController(ApplicationUserService userService, ApplicationUserMapper userMapper) {
+    public ApplicationUserController(
+            ApplicationUserService userService, ApplicationUserMapper userMapper) {
         this.userService = userService;
         this.userMapper = userMapper;
     }
 
     @Override
-    public ResponseEntity<ba.rs.udas.udas_member_management.model.ApplicationUser> getCurrentUser() {
+    public ResponseEntity<ba.rs.udas.udas_member_management.model.ApplicationUser>
+            getCurrentUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !auth.isAuthenticated()) {
             return ResponseEntity.status(401).build();
@@ -39,13 +40,15 @@ public class ApplicationUserController implements UsersApi {
         if (!(auth.getPrincipal() instanceof OidcUser oidcUser)) {
             return ResponseEntity.status(401).build();
         }
-        return userService.findByEmail(oidcUser.getEmail())
+        return userService
+                .findByEmail(oidcUser.getEmail())
                 .map(user -> ResponseEntity.ok(userMapper.toModel(user)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @Override
-    public ResponseEntity<ba.rs.udas.udas_member_management.model.ApplicationUser> createUser(@Valid ApplicationUserRequest applicationUserRequest) {
+    public ResponseEntity<ba.rs.udas.udas_member_management.model.ApplicationUser> createUser(
+            @Valid ApplicationUserRequest applicationUserRequest) {
         ApplicationUser created = userService.createUser(applicationUserRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(userMapper.toModel(created));
     }
@@ -60,8 +63,10 @@ public class ApplicationUserController implements UsersApi {
     }
 
     @Override
-    public ResponseEntity<ba.rs.udas.udas_member_management.model.ApplicationUser> getUser(UUID id) {
-        return userService.findById(id)
+    public ResponseEntity<ba.rs.udas.udas_member_management.model.ApplicationUser> getUser(
+            UUID id) {
+        return userService
+                .findById(id)
                 .map(user -> ResponseEntity.ok(userMapper.toModel(user)))
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -69,20 +74,22 @@ public class ApplicationUserController implements UsersApi {
     @Override
     public ResponseEntity<PagedApplicationUser> listUsers() {
         List<ApplicationUser> users = userService.findAll();
-        
-        PagedApplicationUser paged = PagedApplicationUser.builder()
-                .content(users.stream().map(userMapper::toModel).toList())
-                .page(0)
-                .size(users.size())
-                .totalElements(users.size())
-                .totalPages(1)
-                .build();
-        
+
+        PagedApplicationUser paged =
+                PagedApplicationUser.builder()
+                        .content(users.stream().map(userMapper::toModel).toList())
+                        .page(0)
+                        .size(users.size())
+                        .totalElements(users.size())
+                        .totalPages(1)
+                        .build();
+
         return ResponseEntity.ok(paged);
     }
 
     @Override
-    public ResponseEntity<ba.rs.udas.udas_member_management.model.ApplicationUser> updateUser(UUID id, @Valid ApplicationUserRequest applicationUserRequest) {
+    public ResponseEntity<ba.rs.udas.udas_member_management.model.ApplicationUser> updateUser(
+            UUID id, @Valid ApplicationUserRequest applicationUserRequest) {
         ApplicationUser updated = userService.updateUser(id, applicationUserRequest);
         if (updated == null) {
             return ResponseEntity.notFound().build();

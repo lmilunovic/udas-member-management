@@ -1,9 +1,16 @@
 package ba.rs.udas.udas_member_management.controller;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import ba.rs.udas.udas_member_management.fixtures.MemberFixtures;
 import ba.rs.udas.udas_member_management.model.Member;
 import ba.rs.udas.udas_member_management.model.PagedMember;
 import ba.rs.udas.udas_member_management.service.MemberService;
+import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,23 +20,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.util.List;
-import java.util.UUID;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @DisplayName("MemberController operations")
 @ExtendWith(MockitoExtension.class)
 class MemberControllerTest {
 
-    @Mock
-    private MemberService memberService;
+    @Mock private MemberService memberService;
 
-    @InjectMocks
-    private MemberController controller;
+    @InjectMocks private MemberController controller;
 
     @Test
     @DisplayName("listMembers should return 200 with paginated list")
@@ -39,8 +36,8 @@ class MemberControllerTest {
         when(memberService.findAll()).thenReturn(List.of(member));
 
         // When
-        ResponseEntity<PagedMember> result = controller.listMembers(
-                null, null, null, null, null, null, null, null, null);
+        ResponseEntity<PagedMember> result =
+                controller.listMembers(null, null, null, null, null, null, null, null, null);
 
         // Then
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
