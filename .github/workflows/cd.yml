@@ -18,25 +18,21 @@ jobs:
       backend: ${{ steps.filter.outputs.backend }}
       frontend: ${{ steps.filter.outputs.frontend }}
     steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.workflow_run.head_sha }}
-          fetch-depth: 2
-      - name: Get parent SHA
-        id: parent
-        run: echo "sha=$(git rev-parse HEAD~1)" >> $GITHUB_OUTPUT
-      - uses: dorny/paths-filter@v3
+      - name: Detect changed paths via GitHub API
         id: filter
-        with:
-          base: ${{ steps.parent.outputs.sha }}
-          ref: ${{ github.event.workflow_run.head_sha }}
-          filters: |
-            backend:
-              - 'backend/**'
-              - 'api/openapi.yaml'
-            frontend:
-              - 'frontend/**'
-              - 'api/openapi.yaml'
+        run: |
+          FILES=$(gh api repos/${{ github.repository }}/commits/${{ github.event.workflow_run.head_sha }} \
+            --jq '[.files[].filename] | join("\n")')
+          BACKEND=false
+          FRONTEND=false
+          while IFS= read -r f; do
+            if [[ "$f" == backend/* || "$f" == api/openapi.yaml ]]; then BACKEND=true; fi
+            if [[ "$f" == frontend/* || "$f" == api/openapi.yaml ]]; then FRONTEND=true; fi
+          done <<< "$FILES"
+          echo "backend=$BACKEND" >> $GITHUB_OUTPUT
+          echo "frontend=$FRONTEND" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   docker-backend:
     needs: changes
