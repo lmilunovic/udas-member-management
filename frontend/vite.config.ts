@@ -13,7 +13,11 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        target: 'http://localhost:8080',
+        target: 'http://udas-backend:8080',
+        changeOrigin: true,
+      },
+      '/oauth2': {
+        target: 'http://udas-backend:8080',
         changeOrigin: true,
       },
     },

@@ -1,61 +1,7 @@
-export interface Address {
-  street?: string;
-  city?: string;
-  postalCode?: string;
-  country?: string;
-}
-
-export interface Member {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string[];
-  phone?: string[];
-  dateOfBirth?: string;
-  dateOfDeath?: string;
-  ssn?: string;
-  address?: Address;
-}
-
-export interface MemberCreateRequest {
-  firstName: string;
-  lastName: string;
-  email: string[];
-  phone?: string[];
-  dateOfBirth?: string;
-  dateOfDeath?: string;
-  ssn?: string;
-  address?: Address;
-}
-
-export interface PagedResponse<T> {
-  content: T[];
-  page: number;
-  size: number;
-  totalElements: number;
-  totalPages: number;
-}
-
-export type UserRole = 'READ_ONLY' | 'READ_WRITE' | 'ADMIN';
-
-export interface ApplicationUser {
-  id: string;
-  email: string;
-  name: string;
-  role: UserRole;
-  active: boolean;
-  createdAt: string;
-}
-
-export interface ApplicationUserRequest {
-  email: string;
-  role: UserRole;
-  active?: boolean;
-}
-
-export interface CurrentUser {
-  id: string;
-  email: string;
-  name: string;
-  role: UserRole;
-}
+// All types are generated from api/openapi.yaml — do not edit manually.
+export type { Member, Address, PagedMember } from './generated';
+export type { ApplicationUser, ApplicationUserRequest, PagedApplicationUser } from './generated';
+export type { ApplicationUserRole as UserRole } from './generated';
+// Aliases for backward compatibility
+export type { ApplicationUser as CurrentUser } from './generated';
+export type { Member as MemberCreateRequest } from './generated';

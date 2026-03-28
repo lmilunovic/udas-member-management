@@ -1,7 +1,12 @@
 import { useAuth } from '../../hooks/useAuth';
+import { Navigate } from 'react-router-dom';
 
 export default function Login() {
-  const { login } = useAuth();
+  const { user, login } = useAuth();
+
+  if (user) {
+    return <Navigate to="/" replace />;
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center">

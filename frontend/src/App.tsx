@@ -25,7 +25,7 @@ export default function App() {
       <Routes>
       <Route path="/login" element={<Login />} />
       <Route element={<Layout />}>
-        <Route path="/" element={<Dashboard />} />
+        <Route path="/" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
         <Route path="/members" element={<PrivateRoute><MemberList /></PrivateRoute>} />
         <Route path="/members/new" element={<PrivateRoute><MemberForm /></PrivateRoute>} />
         <Route path="/members/:id/edit" element={<PrivateRoute><MemberForm /></PrivateRoute>} />

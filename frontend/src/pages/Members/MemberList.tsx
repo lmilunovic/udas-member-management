@@ -75,7 +75,7 @@ export default function MemberList() {
                           className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
                           onClick={() => {
                             if (confirm('Delete this member?')) {
-                              deleteMutation.mutate(member.id);
+                              deleteMutation.mutate(member.id!);
                             }
                           }}
                         >

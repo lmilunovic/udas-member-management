@@ -239,6 +239,24 @@ paths:
         '403':
           description: Forbidden
 
+  /users/me:
+    get:
+      summary: Get current authenticated user
+      operationId: getCurrentUser
+      tags:
+        - Users
+      security:
+        - oauth2: []
+      responses:
+        '200':
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationUser'
+        '401':
+          description: Unauthorized
+
   /users/{id}:
     get:
       summary: Get user by ID
@@ -341,6 +359,10 @@ components:
   schemas:
     Member:
       type: object
+      required:
+        - firstName
+        - lastName
+        - email
       properties:
         id:
           type: string
@@ -388,6 +410,12 @@ components:
 
     PagedMember:
       type: object
+      required:
+        - content
+        - page
+        - size
+        - totalElements
+        - totalPages
       properties:
         content:
           type: array
@@ -404,6 +432,13 @@ components:
 
     ApplicationUser:
       type: object
+      required:
+        - id
+        - email
+        - name
+        - role
+        - active
+        - createdAt
       properties:
         id:
           type: string
@@ -441,6 +476,12 @@ components:
 
     PagedApplicationUser:
       type: object
+      required:
+        - content
+        - page
+        - size
+        - totalElements
+        - totalPages
       properties:
         content:
           type: array
