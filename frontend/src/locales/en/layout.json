@@ -1,0 +1,10 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "members": "Members",
+    "users": "Users"
+  },
+  "userMenu": {
+    "logout": "Log out"
+  }
+}

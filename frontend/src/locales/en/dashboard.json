@@ -1,0 +1,18 @@
+{
+  "title": "Overview",
+  "totalMembers": {
+    "label": "Total Members",
+    "description": "Registered in the system"
+  },
+  "quickSearch": {
+    "label": "Quick Search",
+    "placeholder": "Last name...",
+    "go": "Go"
+  },
+  "browse": {
+    "label": "Browse",
+    "description": "View and filter all members using the advanced search panel.",
+    "viewAll": "View all members"
+  },
+  "recentlyAdded": "Recently Added"
+}

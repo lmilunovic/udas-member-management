@@ -1,0 +1,91 @@
+{
+  "title": "Članovi",
+  "records": "{{count}} zapisa",
+  "addMember": "Dodaj člana",
+  "table": {
+    "firstName": "Ime",
+    "lastName": "Prezime",
+    "email": "Email",
+    "actions": "Akcije"
+  },
+  "pagination": {
+    "showing": "Prikazano {{start}}–{{end}} od {{total}} članova",
+    "page": "Stranica {{page}} od {{totalPages}}",
+    "rowsPerPage": "Redova po stranici",
+    "firstPage": "Prva stranica",
+    "previousPage": "Prethodna stranica",
+    "nextPage": "Sledeća stranica",
+    "lastPage": "Poslednja stranica"
+  },
+  "empty": {
+    "title": "Nema pronađenih članova",
+    "withFilters": "Pokušajte da prilagodite filtere pretrage",
+    "noData": "Dodajte prvog člana za početak",
+    "clearFilters": "Ukloni filtere"
+  },
+  "deleteDialog": {
+    "title": "Obriši člana",
+    "confirm": "Da li ste sigurni da želite da obrišete <strong>{{firstName}} {{lastName}}</strong>? Ova radnja se ne može poništiti.",
+    "cancel": "Otkaži",
+    "delete": "Obriši",
+    "deleting": "Brisanje..."
+  },
+  "form": {
+    "titleNew": "Novi član",
+    "titleEdit": "Izmeni člana",
+    "subtitle": "Unesite podatke o članu",
+    "backAriaLabel": "Nazad na članove",
+    "createButton": "Kreiraj člana",
+    "updateButton": "Ažuriraj člana",
+    "error": "Čuvanje nije uspelo. Proverite formu i pokušajte ponovo.",
+    "sections": {
+      "identity": "Identitet",
+      "contact": "Kontakt",
+      "personalDetails": "Lični podaci",
+      "address": "Adresa"
+    },
+    "fields": {
+      "firstName": "Ime",
+      "firstNamePlaceholder": "Unesite ime",
+      "lastName": "Prezime",
+      "lastNamePlaceholder": "Unesite prezime",
+      "email": "Email",
+      "emailPlaceholder": "email@primer.com",
+      "phone": "Telefon",
+      "phonePlaceholder": "+381 60 000 0000",
+      "dateOfBirth": "Datum rođenja",
+      "dateOfDeath": "Datum smrti",
+      "ssn": "JMBG",
+      "ssnPlaceholder": "Jedinstveni matični broj građana",
+      "street": "Ulica",
+      "streetPlaceholder": "Naziv ulice i broj",
+      "city": "Grad",
+      "cityPlaceholder": "Grad",
+      "postalCode": "Poštanski broj",
+      "postalCodePlaceholder": "Poštanski broj",
+      "country": "Država",
+      "countryPlaceholder": "Država"
+    }
+  },
+  "filters": {
+    "title": "Filteri",
+    "clearAll": "Ukloni sve",
+    "collapseAriaLabel": "Skupi filtere",
+    "expandAriaLabel": "Proširi filtere",
+    "clearFieldAriaLabel": "Ukloni",
+    "fields": {
+      "firstName": "Ime",
+      "firstNamePlaceholder": "Pretraga po imenu...",
+      "lastName": "Prezime",
+      "lastNamePlaceholder": "Pretraga po prezimenu...",
+      "email": "Email",
+      "emailPlaceholder": "Pretraga po emailu...",
+      "phone": "Telefon",
+      "phonePlaceholder": "Pretraga po telefonu...",
+      "city": "Grad",
+      "cityPlaceholder": "Pretraga po gradu...",
+      "country": "Država",
+      "countryPlaceholder": "Pretraga po državi..."
+    }
+  }
+}

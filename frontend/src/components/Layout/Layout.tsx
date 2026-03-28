@@ -1,4 +1,5 @@
 import { LogOut, LayoutDashboard, Users, UserCog } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Outlet, Link, useLocation, Navigate } from 'react-router-dom';
 
 import { Badge } from '@/components/ui/badge';
@@ -14,6 +15,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
 import { useAuth } from '../../hooks/useAuth';
+import { LanguageSwitcher } from '../LanguageSwitcher';
 
 function roleBadgeVariant(role: string) {
   if (role === 'ADMIN') return 'accent' as const;
@@ -54,14 +56,15 @@ function LayoutSkeleton() {
 export default function Layout() {
   const { user, isLoading, logout } = useAuth();
   const location = useLocation();
+  const { t } = useTranslation('layout');
 
   if (isLoading) return <LayoutSkeleton />;
   if (!user) return <Navigate to="/login" replace />;
 
   const navItems = [
-    { path: '/', label: 'Dashboard', icon: LayoutDashboard },
-    { path: '/members', label: 'Members', icon: Users },
-    ...(user?.role === 'ADMIN' ? [{ path: '/users', label: 'Users', icon: UserCog }] : []),
+    { path: '/', label: t('nav.dashboard'), icon: LayoutDashboard },
+    { path: '/members', label: t('nav.members'), icon: Users },
+    ...(user?.role === 'ADMIN' ? [{ path: '/users', label: t('nav.users'), icon: UserCog }] : []),
   ];
 
   const isActive = (path: string) => {
@@ -93,7 +96,8 @@ export default function Layout() {
               </Link>
             ))}
           </nav>
-          <div className="ml-auto">
+          <div className="ml-auto flex items-center gap-3">
+            <LanguageSwitcher />
             <DropdownMenu>
               <DropdownMenuTrigger className="flex items-center gap-2 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-ring">
                 <div className="h-8 w-8 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-semibold">
@@ -119,7 +123,7 @@ export default function Layout() {
                   className="text-destructive focus:text-destructive cursor-pointer"
                 >
                   <LogOut className="mr-2 h-4 w-4" />
-                  Log out
+                  {t('userMenu.logout')}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

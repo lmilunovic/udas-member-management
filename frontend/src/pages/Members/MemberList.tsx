@@ -18,6 +18,7 @@ import {
   ChevronsRight,
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link, useSearchParams } from 'react-router-dom';
 
 import { MemberFilterPanel } from '@/components/members/MemberFilterPanel';
@@ -72,6 +73,7 @@ export default function MemberList() {
   const queryClient = useQueryClient();
   const [searchParams] = useSearchParams();
   const [memberToDelete, setMemberToDelete] = useState<Member | null>(null);
+  const { t } = useTranslation(['members', 'common']);
 
   const initialLastName = searchParams.get('lastName') ?? '';
 
@@ -132,15 +134,15 @@ export default function MemberList() {
 
   const columns = [
     columnHelper.accessor('firstName', {
-      header: 'First Name',
+      header: t('members:table.firstName'),
       enableSorting: true,
     }),
     columnHelper.accessor('lastName', {
-      header: 'Last Name',
+      header: t('members:table.lastName'),
       enableSorting: true,
     }),
     columnHelper.accessor('email', {
-      header: 'Email',
+      header: t('members:table.email'),
       cell: (info) => {
         const emails = info.getValue();
         return emails?.[0] ?? <span className="text-muted-foreground">—</span>;
@@ -149,16 +151,16 @@ export default function MemberList() {
     }),
     columnHelper.display({
       id: 'actions',
-      header: 'Actions',
+      header: t('members:table.actions'),
       cell: (info) => {
         const member = info.row.original;
         return (
           <div className="flex items-center gap-2">
             <Button asChild variant="outline" size="sm">
-              <Link to={`/members/${member.id}/edit`}>Edit</Link>
+              <Link to={`/members/${member.id}/edit`}>{t('common:edit')}</Link>
             </Button>
             <Button variant="destructive" size="sm" onClick={() => setMemberToDelete(member)}>
-              Delete
+              {t('common:delete')}
             </Button>
           </div>
         );
@@ -186,15 +188,17 @@ export default function MemberList() {
       {/* Page header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Members</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">{t('members:title')}</h1>
           {!isLoading && (
-            <p className="text-sm text-muted-foreground mt-0.5">{totalElements} records</p>
+            <p className="text-sm text-muted-foreground mt-0.5">
+              {t('members:records', { count: totalElements })}
+            </p>
           )}
         </div>
         <Button asChild>
           <Link to="/members/new">
             <Plus size={16} className="mr-2" />
-            Add Member
+            {t('members:addMember')}
           </Link>
         </Button>
       </div>
@@ -250,15 +254,15 @@ export default function MemberList() {
                 <td colSpan={4} className="px-4 py-20 text-center">
                   <div className="flex flex-col items-center gap-3">
                     <Users size={40} className="text-muted-foreground/40" />
-                    <p className="font-medium">No members found</p>
+                    <p className="font-medium">{t('members:empty.title')}</p>
                     <p className="text-sm text-muted-foreground">
                       {activeFilterCount > 0
-                        ? 'Try adjusting your search filters'
-                        : 'Add your first member to get started'}
+                        ? t('members:empty.withFilters')
+                        : t('members:empty.noData')}
                     </p>
                     {activeFilterCount > 0 && (
                       <Button variant="outline" size="sm" onClick={resetFilters} className="mt-1">
-                        Clear filters
+                        {t('members:empty.clearFilters')}
                       </Button>
                     )}
                   </div>
@@ -283,7 +287,11 @@ export default function MemberList() {
       {!isLoading && totalElements > 0 && (
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-sm text-muted-foreground">
-            Showing {startItem}–{endItem} of {totalElements} members
+            {t('members:pagination.showing', {
+              start: startItem,
+              end: endItem,
+              total: totalElements,
+            })}
           </p>
 
           <div className="flex items-center gap-1">
@@ -293,7 +301,7 @@ export default function MemberList() {
               className="h-8 w-8"
               disabled={page === 0}
               onClick={() => setPage(0)}
-              aria-label="First page"
+              aria-label={t('members:pagination.firstPage')}
             >
               <ChevronsLeft size={16} />
             </Button>
@@ -303,12 +311,12 @@ export default function MemberList() {
               className="h-8 w-8"
               disabled={page === 0}
               onClick={() => setPage(page - 1)}
-              aria-label="Previous page"
+              aria-label={t('members:pagination.previousPage')}
             >
               <ChevronLeft size={16} />
             </Button>
             <span className="text-sm px-3 min-w-[6rem] text-center">
-              Page {page + 1} of {totalPages}
+              {t('members:pagination.page', { page: page + 1, totalPages })}
             </span>
             <Button
               variant="outline"
@@ -316,7 +324,7 @@ export default function MemberList() {
               className="h-8 w-8"
               disabled={page >= totalPages - 1}
               onClick={() => setPage(page + 1)}
-              aria-label="Next page"
+              aria-label={t('members:pagination.nextPage')}
             >
               <ChevronRight size={16} />
             </Button>
@@ -326,14 +334,16 @@ export default function MemberList() {
               className="h-8 w-8"
               disabled={page >= totalPages - 1}
               onClick={() => setPage(totalPages - 1)}
-              aria-label="Last page"
+              aria-label={t('members:pagination.lastPage')}
             >
               <ChevronsRight size={16} />
             </Button>
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">Rows per page</span>
+            <span className="text-sm text-muted-foreground">
+              {t('members:pagination.rowsPerPage')}
+            </span>
             <Select value={String(pageSize)} onValueChange={(v) => setPageSize(Number(v))}>
               <SelectTrigger className="w-20 h-8 text-sm">
                 <SelectValue />
@@ -356,25 +366,30 @@ export default function MemberList() {
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Delete member</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to delete{' '}
-              <strong>
-                {memberToDelete?.firstName} {memberToDelete?.lastName}
-              </strong>
-              ? This action cannot be undone.
+            <DialogTitle>{t('members:deleteDialog.title')}</DialogTitle>
+            <DialogDescription asChild>
+              <span
+                dangerouslySetInnerHTML={{
+                  __html: t('members:deleteDialog.confirm', {
+                    firstName: memberToDelete?.firstName ?? '',
+                    lastName: memberToDelete?.lastName ?? '',
+                  }),
+                }}
+              />
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="gap-2">
             <Button variant="outline" onClick={() => setMemberToDelete(null)}>
-              Cancel
+              {t('members:deleteDialog.cancel')}
             </Button>
             <Button
               variant="destructive"
               onClick={() => memberToDelete?.id && deleteMutation.mutate(memberToDelete.id)}
               disabled={deleteMutation.isPending}
             >
-              {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
+              {deleteMutation.isPending
+                ? t('members:deleteDialog.deleting')
+                : t('members:deleteDialog.delete')}
             </Button>
           </DialogFooter>
         </DialogContent>

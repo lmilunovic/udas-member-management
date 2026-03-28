@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Users, Search } from 'lucide-react';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { Button } from '@/components/ui/button';
@@ -8,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 
 import { membersApi } from '../../api/members';
+import { getIntlLocale } from '../../i18n';
 
 function getInitials(firstName: string, lastName: string) {
   return `${firstName?.[0] ?? ''}${lastName?.[0] ?? ''}`.toUpperCase();
@@ -38,6 +40,7 @@ function DashboardSkeleton() {
 export default function Dashboard() {
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation('dashboard');
 
   const { data: countData, isLoading: isCountLoading } = useQuery({
     queryKey: ['members-count'],
@@ -51,7 +54,7 @@ export default function Dashboard() {
 
   const isLoading = isCountLoading || isRecentLoading;
 
-  const today = new Intl.DateTimeFormat('en-US', {
+  const today = new Intl.DateTimeFormat(getIntlLocale(i18n.language), {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
@@ -72,7 +75,7 @@ export default function Dashboard() {
   return (
     <div className="space-y-8 animate-fade-in">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Overview</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">{t('title')}</h1>
         <p className="text-sm text-muted-foreground mt-0.5">{today}</p>
       </div>
 
@@ -83,12 +86,12 @@ export default function Dashboard() {
             <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
               <Users size={18} className="text-primary" />
             </div>
-            <p className="text-sm font-medium text-muted-foreground">Total Members</p>
+            <p className="text-sm font-medium text-muted-foreground">{t('totalMembers.label')}</p>
           </div>
           <p className="text-4xl font-bold tracking-tighter text-foreground">
             {countData?.totalElements ?? 0}
           </p>
-          <p className="text-xs text-muted-foreground mt-2">Registered in the system</p>
+          <p className="text-xs text-muted-foreground mt-2">{t('totalMembers.description')}</p>
         </div>
 
         {/* Quick search card */}
@@ -97,29 +100,27 @@ export default function Dashboard() {
             <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
               <Search size={18} className="text-primary" />
             </div>
-            <p className="text-sm font-medium text-muted-foreground">Quick Search</p>
+            <p className="text-sm font-medium text-muted-foreground">{t('quickSearch.label')}</p>
           </div>
           <form onSubmit={handleSearch} className="flex gap-2">
             <Input
-              placeholder="Last name..."
+              placeholder={t('quickSearch.placeholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="h-9 text-sm"
             />
             <Button type="submit" size="sm" variant="outline">
-              Go
+              {t('quickSearch.go')}
             </Button>
           </form>
         </div>
 
         {/* Browse members card */}
         <div className="bg-card border border-border rounded-lg p-6 flex flex-col">
-          <p className="text-sm font-medium text-muted-foreground mb-4">Browse</p>
-          <p className="text-sm text-foreground mb-4 flex-1">
-            View and filter all members using the advanced search panel.
-          </p>
+          <p className="text-sm font-medium text-muted-foreground mb-4">{t('browse.label')}</p>
+          <p className="text-sm text-foreground mb-4 flex-1">{t('browse.description')}</p>
           <Button asChild variant="outline" size="sm" className="w-full">
-            <Link to="/members">View all members</Link>
+            <Link to="/members">{t('browse.viewAll')}</Link>
           </Button>
         </div>
       </div>
@@ -128,7 +129,7 @@ export default function Dashboard() {
       {recentData && recentData.content.length > 0 && (
         <div>
           <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
-            Recently Added
+            {t('recentlyAdded')}
           </h2>
           <div className="bg-card border border-border rounded-lg overflow-hidden">
             {recentData.content.map((member, index) => (

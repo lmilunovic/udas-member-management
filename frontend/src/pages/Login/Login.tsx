@@ -1,7 +1,9 @@
+import { useTranslation } from 'react-i18next';
 import { Navigate } from 'react-router-dom';
 
 import { Button } from '@/components/ui/button';
 
+import { LanguageSwitcher } from '../../components/LanguageSwitcher';
 import { useAuth } from '../../hooks/useAuth';
 
 function GoogleIcon() {
@@ -29,6 +31,7 @@ function GoogleIcon() {
 
 export default function Login() {
   const { user, login } = useAuth();
+  const { t } = useTranslation('login');
 
   if (user) {
     return <Navigate to="/" replace />;
@@ -44,13 +47,11 @@ export default function Login() {
           <span className="text-lg font-semibold tracking-tight">UDAS</span>
         </div>
         <div className="space-y-6">
-          <h1 className="text-4xl font-bold tracking-tighter leading-none">
-            Member
-            <br />
-            Management
+          <h1 className="text-4xl font-bold tracking-tighter leading-none whitespace-pre-line">
+            {t('product')}
           </h1>
           <p className="text-base text-background/60 max-w-[30ch] leading-relaxed">
-            Secure access to organization records. Powered by Google OAuth.
+            {t('tagline')}
           </p>
         </div>
         <p className="text-sm text-background/40">UDAS &mdash; {currentYear}</p>
@@ -63,18 +64,17 @@ export default function Login() {
             <span className="text-lg font-semibold tracking-tight">UDAS</span>
           </div>
           <div className="space-y-2">
-            <h2 className="text-2xl font-semibold tracking-tight">Sign in</h2>
-            <p className="text-sm text-muted-foreground">
-              Use your organization Google account to continue
-            </p>
+            <h2 className="text-2xl font-semibold tracking-tight">{t('title')}</h2>
+            <p className="text-sm text-muted-foreground">{t('subtitle')}</p>
           </div>
           <Button onClick={login} size="lg" className="w-full gap-3">
             <GoogleIcon />
-            Continue with Google
+            {t('continueWithGoogle')}
           </Button>
-          <p className="text-xs text-center text-muted-foreground">
-            By signing in you agree to your organization&apos;s access policy.
-          </p>
+          <p className="text-xs text-center text-muted-foreground">{t('policy')}</p>
+          <div className="flex justify-center pt-2">
+            <LanguageSwitcher />
+          </div>
         </div>
       </div>
     </div>

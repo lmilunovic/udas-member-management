@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ArrowLeft, Save, Loader2, AlertCircle } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 
 import { Button } from '@/components/ui/button';
@@ -18,12 +19,6 @@ import { Switch } from '@/components/ui/switch';
 
 import { type ApplicationUserRequest, type UserRole } from '../../api/types';
 import { usersApi } from '../../api/users';
-
-const ROLE_DESCRIPTIONS: Record<UserRole, string> = {
-  READ_ONLY: 'Can view member records',
-  READ_WRITE: 'Can create, edit, and delete members',
-  ADMIN: 'Full access including user management',
-};
 
 function FormSkeleton() {
   return (
@@ -46,6 +41,7 @@ export default function UserForm() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const isEdit = Boolean(id);
+  const { t } = useTranslation(['users', 'common']);
 
   const [form, setForm] = useState<ApplicationUserRequest>({
     email: '',
@@ -91,15 +87,15 @@ export default function UserForm() {
       {/* Page header */}
       <div className="flex items-center gap-3 mb-8">
         <Button variant="ghost" size="icon" asChild>
-          <Link to="/users" aria-label="Back to users">
+          <Link to="/users" aria-label={t('users:form.backAriaLabel')}>
             <ArrowLeft size={16} />
           </Link>
         </Button>
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">
-            {isEdit ? 'Edit User' : 'New User'}
+            {isEdit ? t('users:form.titleEdit') : t('users:form.titleNew')}
           </h1>
-          <p className="text-sm text-muted-foreground">Manage user access and permissions</p>
+          <p className="text-sm text-muted-foreground">{t('users:form.subtitle')}</p>
         </div>
       </div>
 
@@ -107,7 +103,7 @@ export default function UserForm() {
         {/* Email */}
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="email">
-            Email <span className="text-destructive">*</span>
+            {t('users:form.fields.email')} <span className="text-destructive">*</span>
           </Label>
           <Input
             id="email"
@@ -115,25 +111,25 @@ export default function UserForm() {
             value={form.email}
             onChange={(e) => setForm((prev) => ({ ...prev, email: e.target.value }))}
             required
-            placeholder="user@example.com"
+            placeholder={t('users:form.fields.emailPlaceholder')}
             disabled={isEdit}
           />
           {isEdit && (
-            <p className="text-xs text-muted-foreground">Email cannot be changed after creation</p>
+            <p className="text-xs text-muted-foreground">{t('users:form.fields.emailReadOnly')}</p>
           )}
         </div>
 
         {/* Role */}
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="role">
-            Role <span className="text-destructive">*</span>
+            {t('users:form.fields.role')} <span className="text-destructive">*</span>
           </Label>
           <Select
             value={form.role}
             onValueChange={(v) => setForm((prev) => ({ ...prev, role: v as UserRole }))}
           >
             <SelectTrigger id="role">
-              <SelectValue placeholder="Select a role" />
+              <SelectValue placeholder={t('users:form.fields.rolePlaceholder')} />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="READ_ONLY">READ_ONLY</SelectItem>
@@ -142,13 +138,13 @@ export default function UserForm() {
             </SelectContent>
           </Select>
           {form.role && (
-            <p className="text-xs text-muted-foreground">{ROLE_DESCRIPTIONS[form.role]}</p>
+            <p className="text-xs text-muted-foreground">{t(`users:form.roles.${form.role}`)}</p>
           )}
         </div>
 
         {/* Active switch */}
         <div className="flex flex-col gap-1.5">
-          <Label htmlFor="active">Account Status</Label>
+          <Label htmlFor="active">{t('users:form.fields.accountStatus')}</Label>
           <div className="flex items-center gap-3 h-10">
             <Switch
               id="active"
@@ -156,7 +152,9 @@ export default function UserForm() {
               onCheckedChange={(checked) => setForm((prev) => ({ ...prev, active: checked }))}
             />
             <span className="text-sm text-muted-foreground">
-              {form.active ? 'Account is active' : 'Account is disabled'}
+              {form.active
+                ? t('users:form.fields.accountActive')
+                : t('users:form.fields.accountDisabled')}
             </span>
           </div>
         </div>
@@ -165,7 +163,7 @@ export default function UserForm() {
         {mutation.isError && (
           <div className="flex items-center gap-2 text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-md px-4 py-3">
             <AlertCircle size={16} className="shrink-0" />
-            <span>Failed to save user. Please check the form and try again.</span>
+            <span>{t('users:form.error')}</span>
           </div>
         )}
 
@@ -175,17 +173,17 @@ export default function UserForm() {
             {mutation.isPending ? (
               <>
                 <Loader2 size={16} className="mr-2 animate-spin" />
-                Saving...
+                {t('common:saving')}
               </>
             ) : (
               <>
                 <Save size={16} className="mr-2" />
-                {isEdit ? 'Update User' : 'Create User'}
+                {isEdit ? t('users:form.updateButton') : t('users:form.createButton')}
               </>
             )}
           </Button>
           <Button type="button" variant="outline" onClick={() => navigate('/users')}>
-            Cancel
+            {t('common:cancel')}
           </Button>
         </div>
       </form>

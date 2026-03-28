@@ -1,0 +1,58 @@
+{
+  "title": "Users",
+  "count": "{{count}} users",
+  "addUser": "Add User",
+  "table": {
+    "name": "Name",
+    "email": "Email",
+    "role": "Role",
+    "status": "Status",
+    "created": "Created",
+    "actions": "Actions"
+  },
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive"
+  },
+  "empty": {
+    "title": "No users found",
+    "description": "Add a user to get started"
+  },
+  "deleteDialog": {
+    "title": "Delete user",
+    "confirm": "Are you sure you want to delete <strong>{{name}}</strong> ({{email}})? This action cannot be undone.",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "deleting": "Deleting..."
+  },
+  "form": {
+    "titleNew": "New User",
+    "titleEdit": "Edit User",
+    "subtitle": "Manage user access and permissions",
+    "backAriaLabel": "Back to users",
+    "createButton": "Create User",
+    "updateButton": "Update User",
+    "error": "Failed to save user. Please check the form and try again.",
+    "fields": {
+      "email": "Email",
+      "emailPlaceholder": "user@example.com",
+      "emailReadOnly": "Email cannot be changed after creation",
+      "role": "Role",
+      "rolePlaceholder": "Select a role",
+      "accountStatus": "Account Status",
+      "accountActive": "Account is active",
+      "accountDisabled": "Account is disabled"
+    },
+    "roles": {
+      "READ_ONLY": "Can view member records",
+      "READ_WRITE": "Can create, edit, and delete members",
+      "ADMIN": "Full access including user management"
+    }
+  },
+  "login": {
+    "title": "Sign in",
+    "subtitle": "Use your organization Google account to continue",
+    "continueWithGoogle": "Continue with Google",
+    "policy": "By signing in you agree to your organization's access policy."
+  }
+}

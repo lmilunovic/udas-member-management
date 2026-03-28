@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Plus, UserPlus } from 'lucide-react';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { Badge } from '@/components/ui/badge';
@@ -18,6 +19,7 @@ import { cn } from '@/lib/utils';
 
 import type { ApplicationUser } from '../../api/types';
 import { usersApi } from '../../api/users';
+import { getIntlLocale } from '../../i18n';
 
 function roleBadgeVariant(role: string) {
   if (role === 'ADMIN') return 'accent' as const;
@@ -57,6 +59,7 @@ function TableSkeleton() {
 export default function UserList() {
   const queryClient = useQueryClient();
   const [userToDelete, setUserToDelete] = useState<ApplicationUser | null>(null);
+  const { t, i18n } = useTranslation(['users', 'common']);
 
   const { data, isLoading } = useQuery({
     queryKey: ['users'],
@@ -72,22 +75,26 @@ export default function UserList() {
   });
 
   const formatDate = (dateStr: string) =>
-    new Intl.DateTimeFormat('en-US', { dateStyle: 'medium' }).format(new Date(dateStr));
+    new Intl.DateTimeFormat(getIntlLocale(i18n.language), { dateStyle: 'medium' }).format(
+      new Date(dateStr)
+    );
 
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Page header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Users</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">{t('users:title')}</h1>
           {!isLoading && (
-            <p className="text-sm text-muted-foreground mt-0.5">{data?.totalElements ?? 0} users</p>
+            <p className="text-sm text-muted-foreground mt-0.5">
+              {t('users:count', { count: data?.totalElements ?? 0 })}
+            </p>
           )}
         </div>
         <Button asChild>
           <Link to="/users/new">
             <Plus size={16} className="mr-2" />
-            Add User
+            {t('users:addUser')}
           </Link>
         </Button>
       </div>
@@ -97,12 +104,24 @@ export default function UserList() {
         <table className="w-full text-sm">
           <thead className="bg-muted/50">
             <tr>
-              <th className="px-4 py-3 text-left font-semibold text-muted-foreground">Name</th>
-              <th className="px-4 py-3 text-left font-semibold text-muted-foreground">Email</th>
-              <th className="px-4 py-3 text-left font-semibold text-muted-foreground">Role</th>
-              <th className="px-4 py-3 text-left font-semibold text-muted-foreground">Status</th>
-              <th className="px-4 py-3 text-left font-semibold text-muted-foreground">Created</th>
-              <th className="px-4 py-3 text-left font-semibold text-muted-foreground">Actions</th>
+              <th className="px-4 py-3 text-left font-semibold text-muted-foreground">
+                {t('users:table.name')}
+              </th>
+              <th className="px-4 py-3 text-left font-semibold text-muted-foreground">
+                {t('users:table.email')}
+              </th>
+              <th className="px-4 py-3 text-left font-semibold text-muted-foreground">
+                {t('users:table.role')}
+              </th>
+              <th className="px-4 py-3 text-left font-semibold text-muted-foreground">
+                {t('users:table.status')}
+              </th>
+              <th className="px-4 py-3 text-left font-semibold text-muted-foreground">
+                {t('users:table.created')}
+              </th>
+              <th className="px-4 py-3 text-left font-semibold text-muted-foreground">
+                {t('users:table.actions')}
+              </th>
             </tr>
           </thead>
           <tbody className="bg-card divide-y divide-border">
@@ -113,8 +132,8 @@ export default function UserList() {
                 <td colSpan={6} className="px-4 py-20 text-center">
                   <div className="flex flex-col items-center gap-3">
                     <UserPlus size={40} className="text-muted-foreground/40" />
-                    <p className="font-medium">No users found</p>
-                    <p className="text-sm text-muted-foreground">Add a user to get started</p>
+                    <p className="font-medium">{t('users:empty.title')}</p>
+                    <p className="text-sm text-muted-foreground">{t('users:empty.description')}</p>
                   </div>
                 </td>
               </tr>
@@ -134,17 +153,19 @@ export default function UserList() {
                           user.active ? 'bg-emerald-500' : 'bg-muted-foreground'
                         )}
                       />
-                      <span className="text-sm">{user.active ? 'Active' : 'Inactive'}</span>
+                      <span className="text-sm">
+                        {user.active ? t('users:status.active') : t('users:status.inactive')}
+                      </span>
                     </span>
                   </td>
                   <td className="px-4 py-3 text-muted-foreground">{formatDate(user.createdAt)}</td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
                       <Button asChild variant="outline" size="sm">
-                        <Link to={`/users/${user.id}/edit`}>Edit</Link>
+                        <Link to={`/users/${user.id}/edit`}>{t('common:edit')}</Link>
                       </Button>
                       <Button variant="destructive" size="sm" onClick={() => setUserToDelete(user)}>
-                        Delete
+                        {t('common:delete')}
                       </Button>
                     </div>
                   </td>
@@ -159,22 +180,30 @@ export default function UserList() {
       <Dialog open={userToDelete !== null} onOpenChange={(open) => !open && setUserToDelete(null)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Delete user</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to delete <strong>{userToDelete?.name}</strong> (
-              {userToDelete?.email})? This action cannot be undone.
+            <DialogTitle>{t('users:deleteDialog.title')}</DialogTitle>
+            <DialogDescription asChild>
+              <span
+                dangerouslySetInnerHTML={{
+                  __html: t('users:deleteDialog.confirm', {
+                    name: userToDelete?.name ?? '',
+                    email: userToDelete?.email ?? '',
+                  }),
+                }}
+              />
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="gap-2">
             <Button variant="outline" onClick={() => setUserToDelete(null)}>
-              Cancel
+              {t('users:deleteDialog.cancel')}
             </Button>
             <Button
               variant="destructive"
               onClick={() => userToDelete && deleteMutation.mutate(userToDelete.id)}
               disabled={deleteMutation.isPending}
             >
-              {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
+              {deleteMutation.isPending
+                ? t('users:deleteDialog.deleting')
+                : t('users:deleteDialog.delete')}
             </Button>
           </DialogFooter>
         </DialogContent>

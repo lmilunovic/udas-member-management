@@ -1,0 +1,52 @@
+{
+  "title": "Korisnici",
+  "count": "{{count}} korisnika",
+  "addUser": "Dodaj korisnika",
+  "table": {
+    "name": "Ime",
+    "email": "Email",
+    "role": "Uloga",
+    "status": "Status",
+    "created": "Kreiran",
+    "actions": "Akcije"
+  },
+  "status": {
+    "active": "Aktivan",
+    "inactive": "Neaktivan"
+  },
+  "empty": {
+    "title": "Nema pronađenih korisnika",
+    "description": "Dodajte korisnika za početak"
+  },
+  "deleteDialog": {
+    "title": "Obriši korisnika",
+    "confirm": "Da li ste sigurni da želite da obrišete <strong>{{name}}</strong> ({{email}})? Ova radnja se ne može poništiti.",
+    "cancel": "Otkaži",
+    "delete": "Obriši",
+    "deleting": "Brisanje..."
+  },
+  "form": {
+    "titleNew": "Novi korisnik",
+    "titleEdit": "Izmeni korisnika",
+    "subtitle": "Upravljajte pristupom i dozvolama korisnika",
+    "backAriaLabel": "Nazad na korisnike",
+    "createButton": "Kreiraj korisnika",
+    "updateButton": "Ažuriraj korisnika",
+    "error": "Čuvanje nije uspelo. Proverite formu i pokušajte ponovo.",
+    "fields": {
+      "email": "Email",
+      "emailPlaceholder": "korisnik@primer.com",
+      "emailReadOnly": "Email se ne može menjati nakon kreiranja",
+      "role": "Uloga",
+      "rolePlaceholder": "Izaberite ulogu",
+      "accountStatus": "Status naloga",
+      "accountActive": "Nalog je aktivan",
+      "accountDisabled": "Nalog je onemogućen"
+    },
+    "roles": {
+      "READ_ONLY": "Može pregledati zapise članova",
+      "READ_WRITE": "Može kreirati, menjati i brisati članove",
+      "ADMIN": "Pun pristup uključujući upravljanje korisnicima"
+    }
+  }
+}

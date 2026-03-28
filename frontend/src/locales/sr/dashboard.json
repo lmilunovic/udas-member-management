@@ -1,0 +1,18 @@
+{
+  "title": "Pregled",
+  "totalMembers": {
+    "label": "Ukupno članova",
+    "description": "Registrovano u sistemu"
+  },
+  "quickSearch": {
+    "label": "Brza pretraga",
+    "placeholder": "Prezime...",
+    "go": "Traži"
+  },
+  "browse": {
+    "label": "Pretraži",
+    "description": "Pregledajte i filtrirajte sve članove koristeći napredni panel za pretragu.",
+    "viewAll": "Prikaži sve članove"
+  },
+  "recentlyAdded": "Nedavno dodati"
+}

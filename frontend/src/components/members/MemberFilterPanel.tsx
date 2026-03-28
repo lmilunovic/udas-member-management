@@ -1,5 +1,6 @@
 import { SlidersHorizontal, ChevronDown, ChevronUp, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -15,23 +16,15 @@ interface MemberFilterPanelProps {
   onReset: () => void;
 }
 
-const FILTER_FIELDS: { key: keyof MemberFilters; label: string; placeholder: string }[] = [
-  { key: 'firstName', label: 'First Name', placeholder: 'Search by first name...' },
-  { key: 'lastName', label: 'Last Name', placeholder: 'Search by last name...' },
-  { key: 'email', label: 'Email', placeholder: 'Search by email...' },
-  { key: 'phone', label: 'Phone', placeholder: 'Search by phone...' },
-  { key: 'city', label: 'City', placeholder: 'Search by city...' },
-  { key: 'country', label: 'Country', placeholder: 'Search by country...' },
-];
-
 interface DebouncedInputProps {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
   id: string;
+  clearAriaLabel: string;
 }
 
-function DebouncedInput({ value, onChange, placeholder, id }: DebouncedInputProps) {
+function DebouncedInput({ value, onChange, placeholder, id, clearAriaLabel }: DebouncedInputProps) {
   const [localValue, setLocalValue] = useState(value);
 
   // Sync local state when external value is reset
@@ -65,7 +58,7 @@ function DebouncedInput({ value, onChange, placeholder, id }: DebouncedInputProp
             onChange('');
           }}
           className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-          aria-label="Clear"
+          aria-label={clearAriaLabel}
         >
           <X size={14} />
         </button>
@@ -81,6 +74,40 @@ export function MemberFilterPanel({
   onReset,
 }: MemberFilterPanelProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const { t } = useTranslation('members');
+
+  const filterFields: { key: keyof MemberFilters; label: string; placeholder: string }[] = [
+    {
+      key: 'firstName',
+      label: t('filters.fields.firstName'),
+      placeholder: t('filters.fields.firstNamePlaceholder'),
+    },
+    {
+      key: 'lastName',
+      label: t('filters.fields.lastName'),
+      placeholder: t('filters.fields.lastNamePlaceholder'),
+    },
+    {
+      key: 'email',
+      label: t('filters.fields.email'),
+      placeholder: t('filters.fields.emailPlaceholder'),
+    },
+    {
+      key: 'phone',
+      label: t('filters.fields.phone'),
+      placeholder: t('filters.fields.phonePlaceholder'),
+    },
+    {
+      key: 'city',
+      label: t('filters.fields.city'),
+      placeholder: t('filters.fields.cityPlaceholder'),
+    },
+    {
+      key: 'country',
+      label: t('filters.fields.country'),
+      placeholder: t('filters.fields.countryPlaceholder'),
+    },
+  ];
 
   return (
     <div className="border border-border rounded-lg overflow-hidden">
@@ -88,7 +115,7 @@ export function MemberFilterPanel({
       <div className="flex items-center justify-between px-4 py-3 bg-card">
         <div className="flex items-center gap-2">
           <SlidersHorizontal size={16} className="text-muted-foreground" />
-          <span className="text-sm font-medium">Filters</span>
+          <span className="text-sm font-medium">{t('filters.title')}</span>
           {activeFilterCount > 0 && (
             <Badge variant="default" className="h-5 text-xs px-1.5 py-0">
               {activeFilterCount}
@@ -98,7 +125,7 @@ export function MemberFilterPanel({
         <div className="flex items-center gap-2">
           {activeFilterCount > 0 && (
             <Button variant="ghost" size="sm" onClick={onReset} className="h-7 text-xs px-2">
-              Clear all
+              {t('filters.clearAll')}
             </Button>
           )}
           <Button
@@ -106,7 +133,7 @@ export function MemberFilterPanel({
             size="icon"
             onClick={() => setIsOpen((o) => !o)}
             className="h-7 w-7"
-            aria-label={isOpen ? 'Collapse filters' : 'Expand filters'}
+            aria-label={isOpen ? t('filters.collapseAriaLabel') : t('filters.expandAriaLabel')}
           >
             {isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
           </Button>
@@ -121,7 +148,7 @@ export function MemberFilterPanel({
         )}
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 px-4 py-4 border-t border-border bg-muted/30">
-          {FILTER_FIELDS.map(({ key, label, placeholder }) => (
+          {filterFields.map(({ key, label, placeholder }) => (
             <div key={key} className="flex flex-col gap-1.5">
               <Label htmlFor={`filter-${key}`} className="text-xs text-muted-foreground">
                 {label}
@@ -131,6 +158,7 @@ export function MemberFilterPanel({
                 value={filters[key]}
                 onChange={(value) => onFilterChange(key, value)}
                 placeholder={placeholder}
+                clearAriaLabel={t('filters.clearFieldAriaLabel')}
               />
             </div>
           ))}

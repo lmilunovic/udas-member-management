@@ -1,0 +1,91 @@
+{
+  "title": "Members",
+  "records": "{{count}} records",
+  "addMember": "Add Member",
+  "table": {
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "actions": "Actions"
+  },
+  "pagination": {
+    "showing": "Showing {{start}}–{{end}} of {{total}} members",
+    "page": "Page {{page}} of {{totalPages}}",
+    "rowsPerPage": "Rows per page",
+    "firstPage": "First page",
+    "previousPage": "Previous page",
+    "nextPage": "Next page",
+    "lastPage": "Last page"
+  },
+  "empty": {
+    "title": "No members found",
+    "withFilters": "Try adjusting your search filters",
+    "noData": "Add your first member to get started",
+    "clearFilters": "Clear filters"
+  },
+  "deleteDialog": {
+    "title": "Delete member",
+    "confirm": "Are you sure you want to delete <strong>{{firstName}} {{lastName}}</strong>? This action cannot be undone.",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "deleting": "Deleting..."
+  },
+  "form": {
+    "titleNew": "New Member",
+    "titleEdit": "Edit Member",
+    "subtitle": "Fill in the member's information below",
+    "backAriaLabel": "Back to members",
+    "createButton": "Create Member",
+    "updateButton": "Update Member",
+    "error": "Failed to save member. Please check the form and try again.",
+    "sections": {
+      "identity": "Identity",
+      "contact": "Contact",
+      "personalDetails": "Personal Details",
+      "address": "Address"
+    },
+    "fields": {
+      "firstName": "First Name",
+      "firstNamePlaceholder": "Enter first name",
+      "lastName": "Last Name",
+      "lastNamePlaceholder": "Enter last name",
+      "email": "Email",
+      "emailPlaceholder": "email@example.com",
+      "phone": "Phone",
+      "phonePlaceholder": "+1 (555) 000-0000",
+      "dateOfBirth": "Date of Birth",
+      "dateOfDeath": "Date of Death",
+      "ssn": "SSN",
+      "ssnPlaceholder": "Social security number",
+      "street": "Street",
+      "streetPlaceholder": "Street address",
+      "city": "City",
+      "cityPlaceholder": "City",
+      "postalCode": "Postal Code",
+      "postalCodePlaceholder": "Postal code",
+      "country": "Country",
+      "countryPlaceholder": "Country"
+    }
+  },
+  "filters": {
+    "title": "Filters",
+    "clearAll": "Clear all",
+    "collapseAriaLabel": "Collapse filters",
+    "expandAriaLabel": "Expand filters",
+    "clearFieldAriaLabel": "Clear",
+    "fields": {
+      "firstName": "First Name",
+      "firstNamePlaceholder": "Search by first name...",
+      "lastName": "Last Name",
+      "lastNamePlaceholder": "Search by last name...",
+      "email": "Email",
+      "emailPlaceholder": "Search by email...",
+      "phone": "Phone",
+      "phonePlaceholder": "Search by phone...",
+      "city": "City",
+      "cityPlaceholder": "Search by city...",
+      "country": "Country",
+      "countryPlaceholder": "Search by country..."
+    }
+  }
+}

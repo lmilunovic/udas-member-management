@@ -1,13 +1,16 @@
 FROM eclipse-temurin:17-jdk-alpine AS build
 WORKDIR /app
 
+RUN apk add --no-cache maven
+
 COPY backend/pom.xml .
 COPY backend/mvnw .
 COPY backend/.mvn .mvn
-COPY api /api
 
-RUN apk add --no-cache maven
 RUN ./mvnw dependency:go-offline -B
+
+# Copy API spec after dependencies — changes here only invalidate code generation, not dependency download
+COPY api /api
 
 # Run code generation as a separate layer so it's only re-run when the spec changes,
 # not on every Java source change. Also surfaces generator errors explicitly.

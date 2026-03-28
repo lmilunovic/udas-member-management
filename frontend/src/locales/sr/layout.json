@@ -1,0 +1,10 @@
+{
+  "nav": {
+    "dashboard": "Pregled",
+    "members": "Članovi",
+    "users": "Korisnici"
+  },
+  "userMenu": {
+    "logout": "Odjavi se"
+  }
+}
