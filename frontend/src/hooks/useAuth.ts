@@ -1,21 +1,10 @@
-import { useState } from 'react'
-
-interface User {
-  id: string
-  username: string
-  role: 'ADMIN' | 'USER'
-}
-
-interface AuthState {
-  user: User | null
-  isLoading: boolean
-}
+import { useContext } from 'react';
+import { AuthContext } from '@/context/AuthContext';
 
 export function useAuth() {
-  const [authState] = useState<AuthState>({
-    user: null,
-    isLoading: false,
-  })
-
-  return authState
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
 }

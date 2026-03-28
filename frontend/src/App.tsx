@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from './hooks/useAuth'
+import { AuthProvider } from './context/AuthContext'
 import Layout from './components/Layout/Layout'
 import Login from './pages/Login/Login'
 import Dashboard from './pages/Dashboard/Dashboard'
@@ -20,7 +21,8 @@ function PrivateRoute({ children, adminOnly = false }: { children: React.ReactNo
 
 export default function App() {
   return (
-    <Routes>
+    <AuthProvider>
+      <Routes>
       <Route path="/login" element={<Login />} />
       <Route element={<Layout />}>
         <Route path="/" element={<Dashboard />} />
@@ -29,8 +31,9 @@ export default function App() {
         <Route path="/members/:id/edit" element={<PrivateRoute><MemberForm /></PrivateRoute>} />
         <Route path="/users" element={<PrivateRoute adminOnly><UserList /></PrivateRoute>} />
         <Route path="/users/new" element={<PrivateRoute adminOnly><UserForm /></PrivateRoute>} />
-        <Route path="/users/:id/edit" element={<PrivateRoute adminOnly><UserForm /></UserForm>} />
+        <Route path="/users/:id/edit" element={<PrivateRoute adminOnly><UserForm /></PrivateRoute>} />
       </Route>
-    </Routes>
+      </Routes>
+    </AuthProvider>
   )
 }
