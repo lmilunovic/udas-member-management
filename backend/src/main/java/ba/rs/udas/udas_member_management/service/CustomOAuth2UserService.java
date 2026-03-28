@@ -28,11 +28,15 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         this.userService = userService;
     }
 
+    protected OAuth2User fetchFromProvider(OAuth2UserRequest userRequest) {
+        return super.loadUser(userRequest);
+    }
+
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         log.info("CustomOAuth2UserService.loadUser() called");
-        
-        OAuth2User oauth2User = super.loadUser(userRequest);
+
+        OAuth2User oauth2User = fetchFromProvider(userRequest);
 
         String email = oauth2User.getAttribute("email");
         String name = oauth2User.getAttribute("name");

@@ -234,4 +234,124 @@ class MemberControllerMvcTest {
                 .andExpect(jsonPath("$.totalElements").value(1))
                 .andExpect(jsonPath("$.content[0].firstName").value("John"));
     }
+
+    @Test
+    @DisplayName("GET /api/v1/members?lastName=Doe filters results by last name")
+    @WithMockUser(roles = "READ_ONLY")
+    void listMembers_withLastNameFilter_returnsOnlyMatchingMembers() throws Exception {
+        given(memberService.findAll()).willReturn(
+                List.of(MemberFixtures.memberJohn(), MemberFixtures.memberJane()));
+
+        mockMvc.perform(get("/api/v1/members").param("lastName", "Doe"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalElements").value(1))
+                .andExpect(jsonPath("$.content[0].lastName").value("Doe"));
+    }
+
+    @Test
+    @DisplayName("GET /api/v1/members?email=jane filters results by email")
+    @WithMockUser(roles = "READ_ONLY")
+    void listMembers_withEmailFilter_returnsOnlyMatchingMembers() throws Exception {
+        given(memberService.findAll()).willReturn(
+                List.of(MemberFixtures.memberJohn(), MemberFixtures.memberJane()));
+
+        mockMvc.perform(get("/api/v1/members").param("email", "jane"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalElements").value(1))
+                .andExpect(jsonPath("$.content[0].firstName").value("Jane"));
+    }
+
+    @Test
+    @DisplayName("GET /api/v1/members?phone=%2B098 filters results by phone")
+    @WithMockUser(roles = "READ_ONLY")
+    void listMembers_withPhoneFilter_returnsOnlyMatchingMembers() throws Exception {
+        given(memberService.findAll()).willReturn(
+                List.of(MemberFixtures.memberJohn(), MemberFixtures.memberJane()));
+
+        mockMvc.perform(get("/api/v1/members").param("phone", "+098"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalElements").value(1))
+                .andExpect(jsonPath("$.content[0].firstName").value("Jane"));
+    }
+
+    @Test
+    @DisplayName("GET /api/v1/members?city=London filters results by city")
+    @WithMockUser(roles = "READ_ONLY")
+    void listMembers_withCityFilter_returnsOnlyMatchingMembers() throws Exception {
+        given(memberService.findAll()).willReturn(
+                List.of(MemberFixtures.memberJohn(), MemberFixtures.memberJane()));
+
+        mockMvc.perform(get("/api/v1/members").param("city", "London"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalElements").value(1))
+                .andExpect(jsonPath("$.content[0].firstName").value("Jane"));
+    }
+
+    @Test
+    @DisplayName("GET /api/v1/members?country=UK filters results by country")
+    @WithMockUser(roles = "READ_ONLY")
+    void listMembers_withCountryFilter_returnsOnlyMatchingMembers() throws Exception {
+        given(memberService.findAll()).willReturn(
+                List.of(MemberFixtures.memberJohn(), MemberFixtures.memberJane()));
+
+        mockMvc.perform(get("/api/v1/members").param("country", "UK"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalElements").value(1))
+                .andExpect(jsonPath("$.content[0].firstName").value("Jane"));
+    }
+
+    @Test
+    @DisplayName("GET /api/v1/members?sort=id,desc exercises descending sort direction")
+    @WithMockUser(roles = "READ_ONLY")
+    void listMembers_withSortDesc_returns200() throws Exception {
+        given(memberService.findAll()).willReturn(List.of(MemberFixtures.memberJohn()));
+
+        mockMvc.perform(get("/api/v1/members").param("sort", "id,desc"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalElements").value(1));
+    }
+
+    @Test
+    @DisplayName("GET /api/v1/members?page=0&size=1 returns paginated results with correct metadata")
+    @WithMockUser(roles = "READ_ONLY")
+    void listMembers_withPageAndSize_returnsPaginatedResults() throws Exception {
+        given(memberService.findAll()).willReturn(
+                List.of(MemberFixtures.memberJohn(), MemberFixtures.memberJane()));
+
+        mockMvc.perform(get("/api/v1/members").param("page", "0").param("size", "1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size").value(1))
+                .andExpect(jsonPath("$.totalElements").value(2))
+                .andExpect(jsonPath("$.totalPages").value(2));
+    }
+
+    // --- GlobalExceptionHandler uncovered paths ---
+
+    @Test
+    @DisplayName("POST /api/v1/members when service throws NullPointerException returns 500")
+    @WithMockUser(roles = "READ_WRITE")
+    void createMember_whenServiceThrowsNullPointer_returns500() throws Exception {
+        given(memberService.createMember(any(Member.class)))
+                .willThrow(new NullPointerException("unexpected null"));
+
+        mockMvc.perform(post("/api/v1/members")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(MemberFixtures.memberJohn())))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.title").value("Internal Server Error"));
+    }
+
+    @Test
+    @DisplayName("POST /api/v1/members when service throws RuntimeException returns 500")
+    @WithMockUser(roles = "READ_WRITE")
+    void createMember_whenServiceThrowsRuntimeException_returns500() throws Exception {
+        given(memberService.createMember(any(Member.class)))
+                .willThrow(new RuntimeException("unexpected error"));
+
+        mockMvc.perform(post("/api/v1/members")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(MemberFixtures.memberJohn())))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.title").value("Internal Server Error"));
+    }
 }

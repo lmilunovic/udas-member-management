@@ -27,11 +27,15 @@ public class CustomOidcUserService extends OidcUserService {
         this.userService = userService;
     }
 
+    protected OidcUser fetchFromProvider(OidcUserRequest userRequest) {
+        return super.loadUser(userRequest);
+    }
+
     @Override
     public OidcUser loadUser(OidcUserRequest userRequest) throws OAuth2AuthenticationException {
         log.info("CustomOidcUserService.loadUser() called");
 
-        OidcUser oidcUser = super.loadUser(userRequest);
+        OidcUser oidcUser = fetchFromProvider(userRequest);
 
         String email = oidcUser.getEmail();
         String name = oidcUser.getFullName();

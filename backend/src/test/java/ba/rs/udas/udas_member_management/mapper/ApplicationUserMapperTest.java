@@ -150,4 +150,93 @@ class ApplicationUserMapperTest {
         // Then
         assertThat(result).isEqualTo(ba.rs.udas.udas_member_management.model.ApplicationUser.RoleEnum.READ_ONLY);
     }
+
+    @Test
+    @DisplayName("mapRoleToEntity should return READ_ONLY when role is null")
+    void mapRoleToEntity_givenNullRole_whenMapped_thenReturnsDefaultRole() {
+        // When
+        UserRole result = mapper.mapRoleToEntity(null);
+
+        // Then
+        assertThat(result).isEqualTo(UserRole.READ_ONLY);
+    }
+
+    @Test
+    @DisplayName("toEntity should default active to true when request has null active")
+    void toEntity_whenActiveIsNull_thenDefaultsToTrue() {
+        // Given
+        ApplicationUserRequest request = ApplicationUserRequest.builder()
+                .email("john@example.com")
+                .role(ApplicationUserRequest.RoleEnum.READ_ONLY)
+                .active(null)
+                .build();
+
+        // When
+        ApplicationUser result = mapper.toEntity(request);
+
+        // Then
+        assertThat(result.getActive()).isTrue();
+    }
+
+    @Test
+    @DisplayName("toEntityFromModel should map all fields from model to entity")
+    void toEntityFromModel_givenModel_whenMapped_thenReturnsEntity() {
+        // Given
+        ba.rs.udas.udas_member_management.model.ApplicationUser model =
+                ApplicationUserFixtures.applicationUserModelJohn();
+
+        // When
+        ApplicationUser result = mapper.toEntityFromModel(model);
+
+        // Then
+        assertThat(result).isNotNull();
+        assertThat(result.getId()).isEqualTo(model.getId());
+        assertThat(result.getEmail()).isEqualTo(model.getEmail());
+        assertThat(result.getName()).isEqualTo(model.getName());
+        assertThat(result.getActive()).isEqualTo(model.getActive());
+        assertThat(result.getCreatedAt()).isEqualTo(model.getCreatedAt());
+    }
+
+    @Test
+    @DisplayName("mapRoleToEntityFromModel should map READ_ONLY correctly")
+    void mapRoleToEntityFromModel_givenReadOnlyRole_whenMapped_thenReturnsEntityRole() {
+        // When
+        UserRole result = mapper.mapRoleToEntityFromModel(
+                ba.rs.udas.udas_member_management.model.ApplicationUser.RoleEnum.READ_ONLY);
+
+        // Then
+        assertThat(result).isEqualTo(UserRole.READ_ONLY);
+    }
+
+    @Test
+    @DisplayName("mapRoleToEntityFromModel should map READ_WRITE correctly")
+    void mapRoleToEntityFromModel_givenReadWriteRole_whenMapped_thenReturnsEntityRole() {
+        // When
+        UserRole result = mapper.mapRoleToEntityFromModel(
+                ba.rs.udas.udas_member_management.model.ApplicationUser.RoleEnum.READ_WRITE);
+
+        // Then
+        assertThat(result).isEqualTo(UserRole.READ_WRITE);
+    }
+
+    @Test
+    @DisplayName("mapRoleToEntityFromModel should map ADMIN correctly")
+    void mapRoleToEntityFromModel_givenAdminRole_whenMapped_thenReturnsEntityRole() {
+        // When
+        UserRole result = mapper.mapRoleToEntityFromModel(
+                ba.rs.udas.udas_member_management.model.ApplicationUser.RoleEnum.ADMIN);
+
+        // Then
+        assertThat(result).isEqualTo(UserRole.ADMIN);
+    }
+
+    @Test
+    @DisplayName("mapRoleToEntityFromModel should return READ_ONLY when role is null")
+    void mapRoleToEntityFromModel_givenNullRole_whenMapped_thenReturnsDefaultRole() {
+        // When
+        UserRole result = mapper.mapRoleToEntityFromModel(null);
+
+        // Then
+        assertThat(result).isEqualTo(UserRole.READ_ONLY);
+    }
 }
