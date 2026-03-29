@@ -109,6 +109,18 @@ jobs:
         run: npm run build
         working-directory: frontend/
 
+      - name: Run tests with coverage
+        run: npm run test:coverage
+        working-directory: frontend/
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-coverage
+          path: frontend/coverage/
+          retention-days: 14
+
       - name: Upload frontend dist
         uses: actions/upload-artifact@v4
         with:
@@ -139,6 +151,13 @@ jobs:
       - name: Build and generate coverage report
         run: ./mvnw clean verify
         working-directory: backend/
+
+      - name: Download frontend coverage
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: frontend-coverage
+          path: frontend/coverage/
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@383f7e52eae3ab0510c3cb0e7d9d150bbaeab838  # v3
