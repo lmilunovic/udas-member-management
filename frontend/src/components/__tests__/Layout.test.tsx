@@ -80,7 +80,12 @@ describe('Layout', () => {
       { route: '/' }
     );
     // getInitials('Admin User') => 'AU'
-    const initials = adminUser.name.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2);
+    const initials = adminUser.name
+      .split(' ')
+      .map((n: string) => n[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
     expect(screen.getByText(initials)).toBeInTheDocument();
   });
 });

@@ -6,7 +6,6 @@ import { sampleMember, sampleMember2 } from '../../../test/msw-handlers';
 import { renderWithProviders } from '../../../test/test-utils';
 import Dashboard from '../Dashboard';
 
-
 vi.mock('../../../api/members', () => ({
   membersApi: {
     list: vi.fn(),

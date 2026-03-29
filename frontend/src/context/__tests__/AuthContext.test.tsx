@@ -5,7 +5,6 @@ import { useAuth } from '../../hooks/useAuth';
 import { adminUser } from '../../test/msw-handlers';
 import { AuthProvider } from '../AuthContext';
 
-
 // Mock the API module to avoid axios/MSW interception issues in jsdom
 vi.mock('../../api/users', () => ({
   usersApi: {

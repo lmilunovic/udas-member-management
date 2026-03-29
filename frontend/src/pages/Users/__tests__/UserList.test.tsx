@@ -3,9 +3,12 @@ import userEvent from '@testing-library/user-event';
 
 import { usersApi } from '../../../api/users';
 import { adminUser, readOnlyUser } from '../../../test/msw-handlers';
-import { MockAuthProvider, renderWithProviders, createTestQueryClient } from '../../../test/test-utils';
+import {
+  MockAuthProvider,
+  renderWithProviders,
+  createTestQueryClient,
+} from '../../../test/test-utils';
 import UserList from '../UserList';
-
 
 vi.mock('../../../api/users', () => ({
   usersApi: {
@@ -62,9 +65,7 @@ describe('UserList', () => {
     mockList.mockResolvedValue({ content: [], totalElements: 0, totalPages: 0, page: 0, size: 20 });
     renderUserList();
     await waitFor(() => {
-      expect(
-        screen.getByText(/no users found|nema pronađenih korisnika/i)
-      ).toBeInTheDocument();
+      expect(screen.getByText(/no users found|nema pronađenih korisnika/i)).toBeInTheDocument();
     });
   });
 

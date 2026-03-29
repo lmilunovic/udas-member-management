@@ -81,7 +81,7 @@ describe('useMemberFilters', () => {
       const { result } = renderHook(() => useMemberFilters());
       act(() => result.current.setSort('firstName'));
       act(() => result.current.setSort('firstName')); // now desc
-      act(() => result.current.setSort('lastName'));   // new field → asc
+      act(() => result.current.setSort('lastName')); // new field → asc
       expect(result.current.sort).toEqual({ field: 'lastName', direction: 'asc' });
     });
 

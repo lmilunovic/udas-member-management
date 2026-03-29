@@ -4,9 +4,12 @@ import { Route, Routes } from 'react-router-dom';
 
 import { usersApi } from '../../../api/users';
 import { adminUser, readOnlyUser } from '../../../test/msw-handlers';
-import { MockAuthProvider, renderWithProviders, createTestQueryClient } from '../../../test/test-utils';
+import {
+  MockAuthProvider,
+  renderWithProviders,
+  createTestQueryClient,
+} from '../../../test/test-utils';
 import UserForm from '../UserForm';
-
 
 vi.mock('../../../api/users', () => ({
   usersApi: {

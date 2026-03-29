@@ -4,9 +4,12 @@ import { Route, Routes } from 'react-router-dom';
 
 import { membersApi } from '../../../api/members';
 import { sampleMember, adminUser } from '../../../test/msw-handlers';
-import { MockAuthProvider, renderWithProviders, createTestQueryClient } from '../../../test/test-utils';
+import {
+  MockAuthProvider,
+  renderWithProviders,
+  createTestQueryClient,
+} from '../../../test/test-utils';
 import MemberForm from '../MemberForm';
-
 
 vi.mock('../../../api/members', () => ({
   membersApi: {
@@ -59,10 +62,7 @@ describe('MemberForm', () => {
     it('navigates to /members on successful create', async () => {
       renderForm('/members/new');
 
-      await userEvent.type(
-        screen.getByPlaceholderText(/enter first name|unesite ime/i),
-        'Alice'
-      );
+      await userEvent.type(screen.getByPlaceholderText(/enter first name|unesite ime/i), 'Alice');
       await userEvent.type(
         screen.getByPlaceholderText(/enter last name|unesite prezime/i),
         'Wonder'
@@ -82,10 +82,7 @@ describe('MemberForm', () => {
       mockCreate.mockRejectedValue(new Error('Server Error'));
       renderForm('/members/new');
 
-      await userEvent.type(
-        screen.getByPlaceholderText(/enter first name|unesite ime/i),
-        'Alice'
-      );
+      await userEvent.type(screen.getByPlaceholderText(/enter first name|unesite ime/i), 'Alice');
       await userEvent.type(
         screen.getByPlaceholderText(/enter last name|unesite prezime/i),
         'Wonder'
@@ -142,9 +139,7 @@ describe('MemberForm', () => {
         expect(screen.getByDisplayValue(sampleMember.firstName)).toBeInTheDocument()
       );
 
-      await userEvent.click(
-        screen.getByRole('button', { name: /update member|ažuriraj člana/i })
-      );
+      await userEvent.click(screen.getByRole('button', { name: /update member|ažuriraj člana/i }));
 
       await waitFor(() => {
         expect(mockUpdate).toHaveBeenCalledWith(sampleMember.id, expect.any(Object));
@@ -157,9 +152,7 @@ describe('MemberForm', () => {
         expect(screen.getByDisplayValue(sampleMember.firstName)).toBeInTheDocument()
       );
 
-      await userEvent.click(
-        screen.getByRole('button', { name: /update member|ažuriraj člana/i })
-      );
+      await userEvent.click(screen.getByRole('button', { name: /update member|ažuriraj člana/i }));
 
       await waitFor(() => {
         expect(screen.getByText('Members List')).toBeInTheDocument();

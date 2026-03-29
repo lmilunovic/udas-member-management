@@ -3,9 +3,12 @@ import userEvent from '@testing-library/user-event';
 
 import { membersApi } from '../../../api/members';
 import { sampleMember, sampleMember2, adminUser } from '../../../test/msw-handlers';
-import { MockAuthProvider, renderWithProviders, createTestQueryClient } from '../../../test/test-utils';
+import {
+  MockAuthProvider,
+  renderWithProviders,
+  createTestQueryClient,
+} from '../../../test/test-utils';
 import MemberList from '../MemberList';
-
 
 vi.mock('../../../api/members', () => ({
   membersApi: {
